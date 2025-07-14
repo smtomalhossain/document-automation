@@ -1,6 +1,5 @@
 import {
   MdLogout,
-  MdNotifications,
   MdPeople,
   MdPersonAdd,
   MdRequestPage,
