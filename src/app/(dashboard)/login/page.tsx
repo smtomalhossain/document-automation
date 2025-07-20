@@ -9,8 +9,8 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "Tomal",
-    password: "Tomal@2014",
+    username: "user@example.com",
+    password: "123456",
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,57 +29,64 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = () => {
-    setLoading(true);
-
-    const { username, password } = formData;
-
-    const validUsers = [
-      {
-        username: "Tomal",
-        password: "Tomal@2014",
-        redirect: "/admin",
-        role: "school_admin",
+const handleLogin = async () => {
+  setLoading(true);
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      {
-        username: "Tomal1",
-        password: "Tomal1@2014",
-        redirect: "/create-new-file",
-        role: "file_creator",
-      },
-    ];
+      body: JSON.stringify({
+        email: formData.username, // assuming email is used as username
+        password: formData.password,
+      }),
+    });
 
-    const user = validUsers.find(
-      (u) => u.username === username && u.password === password
-    );
+    const data = await res.json();
 
-    if (user) {
-      Cookies.set(
-        "user.sms",
-        JSON.stringify({
-          id: 1,
-          username: user.username,
-          role: user.role,
-        })
-      );
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedUser", JSON.stringify(formData));
-      } else {
-        localStorage.removeItem("rememberedUser");
-      }
-
-      toast.success("Login Successful!", { autoClose: 1000 });
-
-      setTimeout(() => {
-        window.location.href = user.redirect;
-      }, 1200);
-    } else {
-      toast.error("Invalid username or password", { autoClose: 3000 });
+    if (!res.ok) {
+      throw new Error(data.error || "Login failed");
     }
 
+    // Save token (JWT)
+    Cookies.set("auth_token", data.token, { expires: rememberMe ? 7 : undefined });
+
+    // You may decode the token to get role or user info
+    const tokenPayload = JSON.parse(atob(data.token.split(".")[1]));
+    const role = tokenPayload.role || "user"; // make sure role is included in token
+
+    // Save extra user info if needed
+    Cookies.set("user.sms", JSON.stringify({ id: tokenPayload.userId, role }));
+
+    if (rememberMe) {
+      localStorage.setItem("rememberedUser", JSON.stringify(formData));
+    } else {
+      localStorage.removeItem("rememberedUser");
+    }
+
+    toast.success("Login Successful!", { autoClose: 1000 });
+
+    setTimeout(() => {
+      // Redirect based on role
+      console.log(role);
+        window.location.href = "/admin";
+      
+      // if (role === "school_admin") {
+      //   window.location.href = "/admin";
+      // } else if (role === "file_creator") {
+      //   window.location.href = "/create-new-file";
+      // } else {
+      //   window.location.href = "/dashboard";
+      // }
+    }, 1200);
+  } catch (err: any) {
+    toast.error(err.message || "Login error", { autoClose: 3000 });
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
