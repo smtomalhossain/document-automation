@@ -108,8 +108,29 @@ const BanglaLandForm = () => {
     };
 
     // Handle submit for entire form
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    // const handleSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     const newErrors: { [key: string]: string } = {};
+    //     requiredFields.forEach((field) => {
+    //         if (!formData[field]?.trim()) {
+    //             newErrors[field] = "এই ঘরটি আবশ্যক";
+    //         }
+    //     });
+
+    //     setErrors(newErrors);
+
+    //     if (Object.keys(newErrors).length === 0) {
+    //         // You can submit all data here
+    //         console.log("Main Form Data:", formData);
+    //         console.log("Owners Data:", owners);
+    //         console.log("Lands Data:", lands);
+
+    //         alert("ফর্মটি সফলভাবে সাবমিট হয়েছে!");
+    //     }
+    // };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault(); 
 
         const newErrors: { [key: string]: string } = {};
         requiredFields.forEach((field) => {
@@ -121,14 +142,31 @@ const BanglaLandForm = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            // You can submit all data here
-            console.log("Main Form Data:", formData);
-            console.log("Owners Data:", owners);
-            console.log("Lands Data:", lands);
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const res = await fetch(`${apiUrl}/land-forms`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ formData, owners, lands }),
+                });
 
-            alert("ফর্মটি সফলভাবে সাবমিট হয়েছে!");
+                const result = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(result.error || "Submission failed");
+                }
+
+                console.log("Form submitted successfully:", result);
+                alert("ফর্মটি সফলভাবে সাবমিট হয়েছে!");
+            } catch (err) {
+                console.error(err);
+                alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
+            }
         }
     };
+
 
     return (
         <form
