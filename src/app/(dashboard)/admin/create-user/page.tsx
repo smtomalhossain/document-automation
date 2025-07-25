@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -18,11 +19,37 @@ const RegistrationForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: Handle form submission logic (e.g., send to backend)
-    console.log("Submitted:", formData);
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(`${apiUrl}/auth/create-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    console.log(JSON.stringify(formData));
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert("Error: " + err.error);
+      return;
+    }
+
+    const user = await res.json();
+    alert("User created successfully!");
+    setFormData({ fullName: "", email: "", whatsapp: "", password: "" });
+  } catch (error) {
+    console.error("Failed to create user:", error);
+    alert("Failed to create user.");
+  }
+};
 
   return (
     <div className=" mt-10 flex items-center justify-center bg-gray-100">

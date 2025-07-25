@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { landRecords } from "@/app/lib/data"; // Make sure you have 10 records
+import React, { useEffect, useState } from "react";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Tabel";
 import Modal from "@/components/Modal";
 import { FaDownload, FaEdit, FaTrash } from "react-icons/fa";
 
 type Assignments = {
-  id: number;
+  id: string;
   serialNo: string;
   khatianNo: string;
   CreateDate: string;
@@ -23,10 +22,34 @@ const columns = [
 ];
 
 const UserFileListPage = () => {
+  const [data, setData] = useState<Assignments[]>([]);
+  const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<{
     type: "download" | "edit" | "delete" | null;
     data: Assignments | null;
   }>({ type: null, data: null });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/api/land-forms");
+        const json = await res.json();
+        const mapped = json.map((item: any, index: number) => ({
+          id: (index + 1).toString(),
+          serialNo: item.serial_no,
+          khatianNo: item.khatian_no,
+          CreateDate: item.date_english,
+        }));
+        setData(mapped);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const openModal = (type: "download" | "edit" | "delete", data: Assignments) => {
     setModal({ type, data });
@@ -110,7 +133,6 @@ const UserFileListPage = () => {
             <FaTrash /> Delete
           </button>
         </div>
-
       </td>
     </tr>
   );
@@ -121,8 +143,14 @@ const UserFileListPage = () => {
         <h1 className="text-lg font-semibold">All Files</h1>
       </div>
 
-      <Table columns={columns} renderRow={renderRow} data={landRecords} />
-      <Pagination />
+      {loading ? (
+        <p className="text-center p-6">Loading...</p>
+      ) : (
+        <>
+          <Table columns={columns} renderRow={renderRow} data={data} />
+          <Pagination />
+        </>
+      )}
 
       <Modal
         isOpen={modal.type !== null}
