@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Tabel";
 import Modal from "@/components/Modal";
-import { UsersListData } from "@/app/lib/data";
+import Cookies from "js-cookie";
+// import { UsersListData } from "@/app/lib/data"; // Remove static data import
 
 type Assignments = {
   id: number;
@@ -28,16 +29,54 @@ const UserListPage = () => {
     type: "delete" | null;
     data: Assignments | null;
   }>({ type: null, data: null });
+  const [users, setUsers] = useState<Assignments[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  // Move fetchUsers outside useEffect so it can be reused
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${apiUrl}/user/get-all-user`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+        },
+      });
+      if (!res.ok) throw new Error("Failed to fetch users");
+      const data = await res.json();
+      // Map backend fields to frontend table fields
+      const mapped = data.map((user: any, idx: number) => ({
+        id: user.id,
+        name: user.fullName || "",
+        email: user.email,
+        phone: user.whatsApp || "",
+      }));
+      setUsers(mapped);
+    } catch (err: any) {
+      setError(err.message || "Error fetching users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
   const filteredUsers = useMemo(() => {
-    return UsersListData.filter((user) =>
+    return users.filter((user) =>
       `${user.name} ${user.email} ${user.phone}`.toLowerCase().includes(searchTerm)
     );
-  }, [searchTerm]);
+  }, [searchTerm, users]);
 
   const openModal = (type: "delete", data: Assignments) => {
     setModal({ type, data });
@@ -47,6 +86,28 @@ const UserListPage = () => {
     setModal({ type: null, data: null });
   };
 
+  const handleDelete = async () => {
+    if (!modal.data) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`${apiUrl}/user/delete-user/${modal.data.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+        },
+      });
+      if (!res.ok) throw new Error("Failed to delete user");
+      closeModal();
+      fetchUsers();
+    } catch (err: any) {
+      setDeleteError(err.message || "Error deleting user");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const getModalContent = () => {
     const { type, data } = modal;
     if (!type || !data) return null;
@@ -54,11 +115,13 @@ const UserListPage = () => {
     return (
       <>
         <p>আপনি কি নিশ্চিতভাবে <strong>{data.name}</strong> কে মুছে ফেলতে চান?</p>
+        {deleteError && <div className="text-red-600 mt-2">{deleteError}</div>}
         <button
-          onClick={closeModal}
-          className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          onClick={handleDelete}
+          className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50"
+          disabled={deleting}
         >
-          হ্যাঁ, ডিলিট করুন
+          {deleting ? "ডিলিট হচ্ছে..." : "হ্যাঁ, ডিলিট করুন"}
         </button>
       </>
     );
@@ -97,10 +160,16 @@ const UserListPage = () => {
           className="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-80 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
-      <Table columns={columns} renderRow={renderRow} data={filteredUsers} />
-      <Pagination />
-
+      {loading ? (
+        <div className="text-center py-8">Loading users...</div>
+      ) : error ? (
+        <div className="text-center text-red-600 py-8">{error}</div>
+      ) : (
+        <>
+          <Table columns={columns} renderRow={renderRow} data={filteredUsers} />
+          <Pagination />
+        </>
+      )}
       <Modal
         isOpen={modal.type !== null}
         title="Confirm Delete"

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Tabel";
 import Modal from "@/components/Modal";
-import { PaymentRequestData } from "@/app/lib/data";
+import Cookies from "js-cookie";
 
 type PaymentRequest = {
   id: number;
@@ -42,10 +42,56 @@ const getStatusBadgeColor = (status: string) => {
   }
 };
 
+// Add a type guard for status
+function isValidStatus(status: string): status is "pending" | "approved" | "rejected" {
+  return ["pending", "approved", "rejected"].includes(status);
+}
+
 const PaymentRequestPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<PaymentRequest[]>([]);
   const [modal, setModal] = useState<ModalState>({ type: null, data: null });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    const fetchRecharges = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${apiUrl}/bkash-recharge/`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch payment requests");
+        const recharges = await res.json();
+        const mapped: PaymentRequest[] = [];
+        for (const item of recharges) {
+          const statusRaw = item.status.toLowerCase();
+          if (isValidStatus(statusRaw)) {
+            const status: "pending" | "approved" | "rejected" = statusRaw;
+            const paymentRequest: PaymentRequest = {
+              id: item.id,
+              email: item.user?.email || "",
+              amount: item.amount,
+              transactionId: item.trxId,
+              status,
+            };
+            mapped.push(paymentRequest);
+          }
+        }
+        setData(mapped);
+      } catch (err: any) {
+        setError(err.message || "Error fetching payment requests");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecharges();
+  }, [apiUrl]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -72,7 +118,7 @@ const PaymentRequestPage = () => {
       item.id === modal.data?.id
         ? { ...item, status: modal.type === "approve" ? "approved" : "rejected" }
         : item
-    );
+    ) as PaymentRequest[];
     setData(updated);
     closeModal();
   };
@@ -134,22 +180,20 @@ const PaymentRequestPage = () => {
             <button
               disabled={isHandled}
               onClick={() => openModal("approve", item)}
-              className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${
-                isHandled
+              className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${isHandled
                   ? "bg-green-300 text-white cursor-not-allowed"
                   : "bg-green-600 hover:bg-green-700 text-white"
-              }`}
+                }`}
             >
               <FaCheckCircle /> Approve
             </button>
             <button
               disabled={isHandled}
               onClick={() => openModal("reject", item)}
-              className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${
-                isHandled
+              className={`px-3 py-1 rounded text-sm flex items-center gap-1 ${isHandled
                   ? "bg-red-300 text-white cursor-not-allowed"
                   : "bg-red-600 hover:bg-red-700 text-white"
-              }`}
+                }`}
             >
               <FaTimesCircle /> Reject
             </button>
@@ -170,10 +214,16 @@ const PaymentRequestPage = () => {
           className="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-80 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-
-      <Table columns={columns} renderRow={renderRow} data={filteredData} />
-      <Pagination />
-
+      {loading ? (
+        <div className="text-center py-8">Loading payment requests...</div>
+      ) : error ? (
+        <div className="text-center text-red-600 py-8">{error}</div>
+      ) : (
+        <>
+          <Table columns={columns} renderRow={renderRow} data={filteredData} />
+          <Pagination />
+        </>
+      )}
       <Modal
         isOpen={modal.type !== null}
         title={

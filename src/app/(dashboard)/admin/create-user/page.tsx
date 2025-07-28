@@ -11,7 +11,7 @@ const RegistrationForm = () => {
     password: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -25,7 +25,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch(`${apiUrl}/auth/create-user`, {
+    const res = await fetch(`${apiUrl}/user/create-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

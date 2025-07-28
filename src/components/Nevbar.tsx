@@ -22,7 +22,7 @@ function Navbar() {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
                 const token = Cookies.get("auth_token");
 
-                const res = await fetch(`${apiUrl}/auth/get-user`, {
+                const res = await fetch(`${apiUrl}/user/get-user`, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },
