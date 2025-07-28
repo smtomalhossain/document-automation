@@ -111,15 +111,35 @@ const PaymentRequestPage = () => {
     setModal({ type: null, data: null });
   };
 
-  const confirmAction = () => {
-    if (!modal.data || !modal.type) return;
+  const updateRechargeStatus = async (id: number, status: "APPROVED" | "REJECTED") => {
+    setLoading(true);
+    setError(null); 
+    try {
+      const res = await fetch(`${apiUrl}/bkash-recharge/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error("Failed to update status");
+      const updated = await res.json();
+      setData((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, status: updated.status } : item
+        )
+      );
+    } catch (err: any) {
+      setError(err.message || "Error updating status");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const updated = data.map((item) =>
-      item.id === modal.data?.id
-        ? { ...item, status: modal.type === "approve" ? "approved" : "rejected" }
-        : item
-    ) as PaymentRequest[];
-    setData(updated);
+  const confirmAction = async () => {
+    if (!modal.data || !modal.type) return;
+    await updateRechargeStatus(modal.data.id, modal.type === "approve" ? "APPROVED" : "REJECTED");
     closeModal();
   };
 

@@ -1,22 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const Page = () => {
   const [bkashNumber, setBkashNumber] = useState("");
   const [notice, setNotice] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSaveNumber = () => {
-    alert(`Bkash Number saved: ${bkashNumber}`);
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    fetch(`${apiUrl}/app-setting/bkash_number`)
+      .then((res) => res.json())
+      .then((data) => setBkashNumber(data.value || ""));
+    fetch(`${apiUrl}/app-setting/notice`)
+      .then((res) => res.json())
+      .then((data) => setNotice(data.value || ""));
+  }, []);
+
+  const handleSaveNumber = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const token = Cookies.get("auth_token");
+    const res = await fetch(`${apiUrl}/app-setting/bkash_number`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ value: bkashNumber }),
+    });
+    if (res.ok) {
+      setSuccess("Bkash Number saved successfully!");
+      setTimeout(() => setSuccess(""), 2000);
+    } else {
+      setSuccess("Failed to save Bkash Number");
+    }
   };
 
-  const handleChangeNotice = () => {
-    alert(`Notice changed: ${notice}`);
+  const handleChangeNotice = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const token = Cookies.get("auth_token");
+    const res = await fetch(`${apiUrl}/app-setting/notice`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ value: notice }),
+    });
+    if (res.ok) {
+      setSuccess("Notice changed successfully!");
+      setTimeout(() => setSuccess(""), 2000);
+    } else {
+      setSuccess("Failed to change notice");
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="mx-4 p-6 bg-white rounded-lg shadow-md max-w-md w-full">
+        {success && (
+          <div className="mb-4 p-2 bg-green-100 border border-green-400 text-green-700 rounded text-center">
+            {success}
+          </div>
+        )}
         <div className="mb-6">
           <label
             htmlFor="bkashNumber"
@@ -40,7 +87,6 @@ const Page = () => {
             Save Number
           </button>
         </div>
-
         <div>
           <label
             htmlFor="noticeBoard"

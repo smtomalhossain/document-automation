@@ -13,6 +13,7 @@ function Navbar() {
     const [email, setEmail] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [balance, setBalance] = useState<number | null>(null);
 
     React.useEffect(() => {
         const fetchUser = async () => {
@@ -30,9 +31,20 @@ function Navbar() {
                 if (!res.ok) throw new Error("Failed to fetch user");
                 const data = await res.json();
                 setEmail(data.email || null);
+
+                // Fetch account balance
+                const balRes = await fetch(`${apiUrl}/user/account-balance`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                if (!balRes.ok) throw new Error("Failed to fetch balance");
+                const balData = await balRes.json();
+                setBalance(balData.balance);
             } catch (err: any) {
-                setError("Could not load user");
+                setError("Could not load user or balance");
                 setEmail(null);
+                setBalance(null);
             } finally {
                 setLoading(false);
             }
@@ -62,7 +74,9 @@ function Navbar() {
             {/* ICONS AND USER */}
             <div className="gap-2 flex items-center md:gap-5 justify-end w-full">
                 <div className="bg-red-500 p-1 rounded-md">
-                    <h4 className="text-white text-sm">TK:500</h4>
+                    <h4 className="text-white text-sm">
+                        {loading ? "Loading..." : error ? error : balance !== null ? `TK:${balance}` : "TK:0"}
+                    </h4>
                 </div>
             </div>
 
