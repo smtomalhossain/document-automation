@@ -44,7 +44,7 @@ const getStatusBadgeColor = (status: string) => {
 
 const PaymentRequestPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState<PaymentRequest[]>(PaymentRequestData);
+  const [data, setData] = useState<PaymentRequest[]>([]);
   const [modal, setModal] = useState<ModalState>({ type: null, data: null });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
