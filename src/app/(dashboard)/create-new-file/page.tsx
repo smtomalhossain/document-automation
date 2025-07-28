@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Cookies from "js-cookie";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 interface Owner {
     name: string;
@@ -13,47 +16,85 @@ interface LandInfo {
     stainNo: string;
 }
 
-const initialForm = {
-    bd_form_no: "1077",
-    appendix: "৩৮",
-    serial_no: "২৬১২২২০১১৯১৯",
-    paragraph_no: "৩৯২",
-    office_name: "নন্দীপাড়া ইউনিয়ন ভূমি অফিস",
-    mouzar_no: "নন্দীপাড়া-৫",
-    thana: "ডেমরা",
-    district: "ঢাকা",
-    khatian_no: "১২০৬২",
-    reg_holding_no: "১৮৯/৬১",
+const initialForm: { [key: string]: string } = {
+    bd_form_no: "",
+    appendix: "",
+    serial_no: "",
+    paragraph_no: "",
+    office_name: "",
+    mouzar_no: "",
+    thana: "",
+    district: "",
+    khatian_no: "",
+    reg_holding_no: "",
     total_land_amount: "",
-    table_row_1: "০",
-    table_row_2: "৩,৩০০",
-    table_row_3: "২০৭",
-    table_row_4: "৩,৩০০",
-    table_row_5: "৬,৮০৭",
-    table_row_6: "৬,৮০৭",
-    table_row_7: "০",
-    total_where: "ছয় হাজার আট শত সাত টাকা মাত্র ।",
-    note: "সর্বশেষ কর পরিশোধের সাল - 2024-2025 (অর্থবছর)",
-    invoice_no: "2324-0007831288",
-    date_bangla: "২০ আষাঢ় ১৪৩১",
-    date_english: "০৪ জুলাই, ২০২৪",
+    table_row_1: "",
+    table_row_2: "",
+    table_row_3: "",
+    table_row_4: "",
+    table_row_5: "",
+    table_row_6: "",
+    table_row_7: "",
+    total_where: "",
+    note: "",
+    invoice_no: "",
+    date_bangla: "",
+    date_english: "",
 };
 
 const requiredFields = Object.keys(initialForm);
 
 const BanglaLandForm = () => {
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
+    const mode = searchParams.get("mode") || "create";
+    const isUpdate = mode === "update" && !!id;
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState(initialForm);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     // Owners state
-    const [owners, setOwners] = useState<Owner[]>([
-        { name: "মোঃ আনছার আলী", share: "0.125" },
-    ]);
+    const [owners, setOwners] = useState<Owner[]>([]);
 
     // Lands state
-    const [lands, setLands] = useState<LandInfo[]>([
-        { landClass: "নাল ( আবাসিক )", landAmount: "৮.২৮০০০", stainNo: "১১১২৭" },
-    ]);
+    const [lands, setLands] = useState<LandInfo[]>([]);
+
+    useEffect(() => {
+        if (isUpdate && id) {
+            setLoading(true);
+            const fetchData = async () => {
+                try {
+                    const token = Cookies.get("auth_token");
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                    const res = await fetch(`${apiUrl}/land-forms/${id}`, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+                    if (!res.ok) throw new Error("Failed to fetch data");
+                    const result = await res.json();
+                    console.log('API response for update:', result); // DEBUG
+                    // Only pick the fields that are in initialForm
+                    const formFields = Object.keys(initialForm).reduce((acc, key) => {
+                        acc[key] = result[key] || "";
+                        return acc;
+                    }, {} as { [key: string]: string });
+                    setFormData(formFields);
+                    setOwners(result.owners || []);
+                    setLands(result.lands || []);
+                } catch (err) {
+                    alert("Could not load data");
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchData();
+        } else {
+            setFormData(initialForm);
+            setOwners([]);
+            setLands([]);
+        }
+    }, [isUpdate, id]);
 
     // Handle main form inputs change
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,23 +184,33 @@ const BanglaLandForm = () => {
 
         if (Object.keys(newErrors).length === 0) {
             try {
+                const token = Cookies.get("auth_token");
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const res = await fetch(`${apiUrl}/land-forms`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ formData, owners, lands }),
-                });
-
+                let res;
+                if (isUpdate && id) {
+                    res = await fetch(`${apiUrl}/land-forms/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({ formData, owners, lands }),
+                    });
+                } else {
+                    res = await fetch(`${apiUrl}/land-forms`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({ formData, owners, lands }),
+                    });
+                }
                 const result = await res.json();
-
                 if (!res.ok) {
                     throw new Error(result.error || "Submission failed");
                 }
-
-                console.log("Form submitted successfully:", result);
-                alert("ফর্মটি সফলভাবে সাবমিট হয়েছে!");
+                alert(isUpdate ? "ফর্মটি সফলভাবে আপডেট হয়েছে!" : "ফর্মটি সফলভাবে সাবমিট হয়েছে!");
             } catch (err) {
                 console.error(err);
                 alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
@@ -167,6 +218,8 @@ const BanglaLandForm = () => {
         }
     };
 
+
+    if (loading) return <div className="text-center p-6">Loading...</div>;
 
     return (
         <form
@@ -257,6 +310,17 @@ const BanglaLandForm = () => {
             {/* Owners Section */}
             <div className="md:col-span-2">
                 <h4 className="text-center font-bold mt-8 mb-4 text-lg">মালিকের তথ্য</h4>
+                {owners.length === 0 && (
+                    <div className="flex justify-between flex-wrap gap-4 mt-2">
+                        <button
+                            type="button"
+                            onClick={addOwnerRow}
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                        >
+                            আরও মালিকের নাম যুক্ত করুন
+                        </button>
+                    </div>
+                )}
                 {owners.map((owner, index) => (
                     <div
                         key={index}
@@ -317,6 +381,17 @@ const BanglaLandForm = () => {
             {/* Land Info Section */}
             <div className="md:col-span-3">
                 <h4 className="text-center font-bold mt-8 mb-4 text-lg">জমির তথ্য</h4>
+                {lands.length === 0 && (
+                    <div className="flex justify-between items-center gap-4 mt-3">
+                        <button
+                            type="button"
+                            onClick={addLandRow}
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                        >
+                            আরও জমির তথ্য যুক্ত করুন
+                        </button>
+                    </div>
+                )}
                 {lands.map((land, index) => (
                     <div
                         key={index}

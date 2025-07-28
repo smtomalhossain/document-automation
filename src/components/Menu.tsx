@@ -20,7 +20,7 @@ const Menu = () => {
     }
   }, []);
 
-  const selectedMenu = role === "school_admin" ? adminMenu : userMenu;
+  const selectedMenu = role === "ADMIN" ? adminMenu : userMenu;
 
   if (!role) return null;
 

@@ -69,17 +69,11 @@ const handleLogin = async () => {
     toast.success("Login Successful!", { autoClose: 1000 });
 
     setTimeout(() => {
-      // Redirect based on role
-      console.log(role);
+      if (role === "ADMIN") {
         window.location.href = "/admin";
-      
-      // if (role === "school_admin") {
-      //   window.location.href = "/admin";
-      // } else if (role === "file_creator") {
-      //   window.location.href = "/create-new-file";
-      // } else {
-      //   window.location.href = "/dashboard";
-      // }
+      } else {
+        window.location.href = "/user-file-list";
+      }
     }, 1200);
   } catch (err: any) {
     toast.error(err.message || "Login error", { autoClose: 3000 });

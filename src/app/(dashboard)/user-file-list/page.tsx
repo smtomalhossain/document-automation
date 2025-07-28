@@ -5,16 +5,19 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Tabel";
 import Modal from "@/components/Modal";
 import { FaDownload, FaEdit, FaTrash } from "react-icons/fa";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Assignments = {
   id: string;
+  sl: number;
   serialNo: string;
   khatianNo: string;
   CreateDate: string;
 };
 
 const columns = [
-  { header: "SL", accessor: "id" },
+  { header: "SL", accessor: "sl" },
   { header: "Serial No", accessor: "serialNo", className: "hidden md:table-cell" },
   { header: "Khatian No.", accessor: "khatianNo", className: "hidden md:table-cell" },
   { header: "Date", accessor: "CreateDate", className: "hidden md:table-cell" },
@@ -22,6 +25,7 @@ const columns = [
 ];
 
 const UserFileListPage = () => {
+  const router = useRouter();
   const [data, setData] = useState<Assignments[]>([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState<{
@@ -32,10 +36,17 @@ const UserFileListPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/land-forms");
+        const token = Cookies.get("auth_token");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
+        const res = await fetch(`${apiUrl}/land-forms/user`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
         const json = await res.json();
         const mapped = json.map((item: any, index: number) => ({
-          id: (index + 1).toString(),
+          id: item.id,
+          sl: index + 1,
           serialNo: item.serial_no,
           khatianNo: item.khatian_no,
           CreateDate: item.date_english,
@@ -57,6 +68,33 @@ const UserFileListPage = () => {
 
   const closeModal = () => {
     setModal({ type: null, data: null });
+  };
+
+  const handleEdit = () => {
+    if (!modal.data) return;
+    router.push(`/create-new-file?id=${modal.data.id}&mode=update`);
+  };
+
+  const handleDelete = async () => {
+    console.log('delete');
+    console.log(modal.data?.id);
+    if (!modal.data) return;
+    try {
+      const token = Cookies.get("auth_token"); 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const res = await fetch(`${apiUrl}/land-forms/${modal.data.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Delete failed");
+      // Remove from UI
+      setData((prev) => prev.filter((item) => item.id !== modal.data!.id));
+      closeModal();
+    } catch (err) {
+      alert("Delete failed");
+    }
   };
 
   const getModalContent = () => {
@@ -81,7 +119,7 @@ const UserFileListPage = () => {
           <>
             <p><strong>{data.khatianNo}</strong> খতিয়ান এডিট করতে চান?</p>
             <button
-              onClick={closeModal}
+              onClick={handleEdit}
               className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
             >
               কনফার্ম এডিট
@@ -93,7 +131,7 @@ const UserFileListPage = () => {
           <>
             <p>আপনি কি নিশ্চিতভাবে <strong>{data.serialNo}</strong> মুছে ফেলতে চান?</p>
             <button
-              onClick={closeModal}
+              onClick={handleDelete}
               className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
             >
               হ্যাঁ, ডিলিট করুন
@@ -108,7 +146,7 @@ const UserFileListPage = () => {
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-300 transition-colors duration-200"
     >
-      <td className="p-4">{item.id}</td>
+      <td className="p-4">{item.sl}</td>
       <td className="hidden md:table-cell">{item.serialNo}</td>
       <td className="hidden md:table-cell">{item.khatianNo}</td>
       <td className="hidden md:table-cell">{item.CreateDate}</td>

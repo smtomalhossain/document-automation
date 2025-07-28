@@ -6,9 +6,39 @@ import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineClose } from "react-icons/ai";
 import Menu from "./Menu";
+import Cookies from "js-cookie";
 
 function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [email, setEmail] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    React.useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+                const token = Cookies.get("auth_token");
+
+                const res = await fetch(`${apiUrl}/auth/get-user`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                if (!res.ok) throw new Error("Failed to fetch user");
+                const data = await res.json();
+                setEmail(data.email || null);
+            } catch (err: any) {
+                setError("Could not load user");
+                setEmail(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUser();
+    }, []);
 
     const handleClick = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -23,7 +53,9 @@ function Navbar() {
                     className="text-3xl lg:hidden cursor-pointer text-gray-500"
                 />
                 <div className="bg-gray-700 flex items-center gap-2 text-xs rounded-md px-3 p-1">
-                    <h4 className="text-white text-sm">tomalhossain@gmail.com</h4>
+                    <h4 className="text-white text-sm">
+                        {loading ? "Loading..." : error ? error : email || "No email"}
+                    </h4>
                 </div>
             </div>
 

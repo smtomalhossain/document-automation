@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 const BkashRecharge = () => {
   const [amount, setAmount] = useState("");
@@ -12,7 +13,7 @@ const BkashRecharge = () => {
 
   const bkashNumber = "017XXXXXXXX"; // 🔁 You can fetch from backend if needed
 
-  const handleRecharge = () => {
+  const handleRecharge = async () => {
     if (!amount || parseFloat(amount) <= 0) {
       alert("অনুগ্রহ করে একটি সঠিক পরিমাণ লিখুন");
       return;
@@ -26,17 +27,36 @@ const BkashRecharge = () => {
     setLoading(true);
     setSuccess(false);
 
-    // Simulate payment process
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const token = Cookies.get("auth_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const res = await fetch(`${apiUrl}/bkash-recharge`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          trxId,
+          bkashNo: bkashNumber,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "রিচার্জ ব্যর্থ হয়েছে");
+      }
       setSuccess(true);
-
       setTimeout(() => {
         setSuccess(false);
         setAmount("");
         setTrxId("");
       }, 3000);
-    }, 2000);
+    } catch (error: any) {
+      alert(error.message || "রিচার্জ ব্যর্থ হয়েছে");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
