@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import Modal from "@/components/Modal";
 
 interface Owner {
     name: string;
@@ -58,6 +59,10 @@ const BanglaLandForm = () => {
 
     // Lands state
     const [lands, setLands] = useState<LandInfo[]>([]);
+
+    //
+    const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+
 
     useEffect(() => {
         if (isUpdate && id) {
@@ -148,30 +153,8 @@ const BanglaLandForm = () => {
         setLands((prev) => prev.filter((_, i) => i !== index));
     };
 
-    // Handle submit for entire form
-    // const handleSubmit = (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     const newErrors: { [key: string]: string } = {};
-    //     requiredFields.forEach((field) => {
-    //         if (!formData[field]?.trim()) {
-    //             newErrors[field] = "এই ঘরটি আবশ্যক";
-    //         }
-    //     });
-
-    //     setErrors(newErrors);
-
-    //     if (Object.keys(newErrors).length === 0) {
-    //         // You can submit all data here
-    //         console.log("Main Form Data:", formData);
-    //         console.log("Owners Data:", owners);
-    //         console.log("Lands Data:", lands);
-
-    //         alert("ফর্মটি সফলভাবে সাবমিট হয়েছে!");
-    //     }
-    // };
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); 
+    const handleFormSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
 
         const newErrors: { [key: string]: string } = {};
         requiredFields.forEach((field) => {
@@ -183,38 +166,48 @@ const BanglaLandForm = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            try {
-                const token = Cookies.get("auth_token");
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                let res;
-                if (isUpdate && id) {
-                    res = await fetch(`${apiUrl}/land-forms/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({ formData, owners, lands }),
-                    });
-                } else {
-                    res = await fetch(`${apiUrl}/land-forms`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({ formData, owners, lands }),
-                    });
-                }
-                const result = await res.json();
-                if (!res.ok) {
-                    throw new Error(result.error || "Submission failed");
-                }
-                alert(isUpdate ? "ফর্মটি সফলভাবে আপডেট হয়েছে!" : "ফর্মটি সফলভাবে সাবমিট হয়েছে!");
-            } catch (err) {
-                console.error(err);
-                alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
+            setShowSubmitConfirm(true); // 👈 Show modal only if form is valid
+        }
+    };
+
+
+    const confirmAndSubmit = async () => {
+        try {
+            const token = Cookies.get("auth_token");
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            let res;
+
+            if (isUpdate && id) {
+                res = await fetch(`${apiUrl}/land-forms/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ formData, owners, lands }),
+                });
+            } else {
+                res = await fetch(`${apiUrl}/land-forms/with-pay`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ formData, owners, lands }),
+                });
             }
+
+            const result = await res.json();
+            if (!res.ok) {
+                throw new Error(result.error || "Submission failed");
+            }
+
+            alert(isUpdate ? "ফর্মটি সফলভাবে আপডেট হয়েছে!" : "ফর্মটি সফলভাবে সাবমিট হয়েছে!");
+        } catch (err) {
+            console.error(err);
+            alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
+        } finally {
+            setShowSubmitConfirm(false); // Close modal
         }
     };
 
@@ -223,7 +216,7 @@ const BanglaLandForm = () => {
 
     return (
         <form
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit }
             className="bg-white p-6 mx-4 rounded-md mt-9 grid grid-cols-1 md:grid-cols-2 gap-6"
         >
             {/* Left Column - General Info */}
@@ -478,6 +471,33 @@ const BanglaLandForm = () => {
                     ফর্ম সাবমিট করুন
                 </button>
             </div>
+            {showSubmitConfirm && (
+                <Modal
+                    isOpen={showSubmitConfirm}
+                    title="নিশ্চিতকরণ"
+                    content={
+                        <div className="space-y-4">
+                            <p>আপনার অ্যাকাউন্ট থেকে ১৫০ টাকা কেটে নেওয়া হবে।</p>
+                            <div className="flex justify-end gap-4">
+                                <button
+                                    onClick={() => setShowSubmitConfirm(false)}
+                                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+                                >
+                                    বাতিল
+                                </button>
+                                <button
+                                    onClick={confirmAndSubmit}
+                                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                >
+                                    নিশ্চিত করুন
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    onClose={() => setShowSubmitConfirm(false)}
+                />
+            )}
+
         </form>
     );
 };
