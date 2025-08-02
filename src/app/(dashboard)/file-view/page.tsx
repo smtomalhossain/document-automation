@@ -145,8 +145,8 @@ const Dakhila = () => {
                     </button>
                   </div>
 
-                  <div className="portlet-body">
-                    <div id="printArea" ref={printAreaRef} className="w-[815px] mx-auto p-4 md:p-10 font-kalpurush text-sm leading-tight text-gray-700 bg-white border border-dashed border-gray-400 relative">
+                  <div className="flex justify-center items-center">
+                    <div id="printArea" ref={printAreaRef} className="font-sans text-[12px] leading-[1.2] text-gray-700 bg-white w-[8in] h-[11in] rounded-lg border border-dotted p-[10px] float-left my-[30px] mx-auto relative">
                       <div className="col-md-12">
                         <table className="w-full">
                           <tbody>
@@ -302,35 +302,35 @@ const Dakhila = () => {
                       </table>
                       <div className="h-2.5" />
 
-                      <table className="table table-striped table-bordered table-hover my-2 w-full">
-                        <tbody>
-                          <tr>
-                            <th className="text-center" colSpan={8}>
-                              আদায়ের বিবরণ
-                            </th>
-                          </tr>
-                          <tr>
-                            <td className="text-center p-1">তিন বৎসরের ঊর্ধ্বের বকেয়া</td>
-                            <td className="text-center p-1">গত তিন বৎসরের বকেয়া</td>
-                            <td className="text-center p-1">বকেয়ার সুদ ও ক্ষতিপূরণ</td>
-                            <td className="text-center p-1">হাল দাবি</td>
-                            <td className="text-center p-1">মোট দাবি</td>
-                            <td className="text-center p-1">মোট আদায়</td>
-                            <td className="text-center p-1">মোট বকেয়া</td>
-                            <td className="text-center p-1">মন্তব্য</td>
-                          </tr>
-                          <tr>
-                            <td align="center" className="p-1">{landForm.table_row_1 || '০'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_2 || '১০৭০'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_3 || '৭২'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_4 || '৩৫০'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_5 || '১৪৯২'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_6 || '১৪৯২'}</td>
-                            <td align="center" className="p-1">{landForm.table_row_7 || '০'}</td>
-                            <td align="center" className="p-1">{landForm.note || ''}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <table className="w-full !important  my-[2px] border border-gray-300 border-collapse">
+  <tbody>
+    <tr className="border-b border-gray-300 hover:bg-gray-50 ">
+      <th className="text-center p-3 border bg-gray-50 border-gray-300" colSpan={8}>
+        আদায়ের বিবরণ
+      </th>
+    </tr>
+    <tr className="border-b border-gray-300 hover:bg-gray-50 ">
+      <td className="text-center p-3 border border-gray-300">তিন বৎসরের ঊর্ধ্বের বকেয়া</td>
+      <td className="text-center p-3 border border-gray-300">গত তিন বৎসরের বকেয়া</td>
+      <td className="text-center p-3 border border-gray-300">বকেয়ার সুদ ও ক্ষতিপূরণ</td>
+      <td className="text-center p-3 border border-gray-300">হাল দাবি</td>
+      <td className="text-center p-3 border border-gray-300">মোট দাবি</td>
+      <td className="text-center p-3 border border-gray-300">মোট আদায়</td>
+      <td className="text-center p-3 border border-gray-300">মোট বকেয়া</td>
+      <td className="text-center p-3 border border-gray-300">মন্তব্য</td>
+    </tr>
+    <tr className="border-b border-gray-300 hover:bg-gray-50 bg-gray-50 ">
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_1 || '০'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_2 || '১০৭০'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_3 || '৭২'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_4 || '৩৫০'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_5 || '১৪৯২'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_6 || '১৪৯২'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_7 || '০'}</td>
+      <td className="text-center p-3 border border-gray-300">{landForm.table_row_7 || '০'}</td>
+    </tr>
+  </tbody>
+</table>
 
                       <p className="border-b border-dotted border-black">
                         সর্বমোট (কথায়): {landForm.total_where || 'এক হাজার চার শত বিরানব্বই টাকা মাত্র'}।
@@ -342,8 +342,8 @@ const Dakhila = () => {
                             <p className="m-0">
                               নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)
                             </p>
-                            <p className="input_bangla mb-0">চালান নং : {landForm.invoice_no || ''}</p>
-                            <p className="mt-0">তারিখ :</p>
+                            <p className="input_bangla mb-0 mt-2">চালান নং : {landForm.invoice_no || ''}</p>
+                            <p className="mt-6">তারিখ :</p>
                             <div className="relative mt-[-37px] ml-2.5">
                               <p className="w-[115px] p-0 m-0 mb-0.5 ml-9">{landForm.date_bangla || '২৬ আষাঢ় ১৪৩২'}</p>
                               <span className="border-t border-solid border-black ml-9 block w-fit">{landForm.date_english || '১০ জুলাই ২০২৫'}</span>
@@ -353,14 +353,16 @@ const Dakhila = () => {
                           </div>
 
                           <div className="w-[90px] float-left text-center relative">
-                            <div className="qrcode-print">
+                            <div className="absolute top-0 left-0 w-full h-full bg-white  rounded-lg p-1.5" 
+     
+                            >
                               <Image
                                 src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=GUPMYgpmETKVAmKwih8UyJM86GwtST09&bgcolor=FFFFFF&format=png"
                                 style={{ top: '2px', left: '374px' }}
                                 alt="QR Code"
                                 width={72}
                                 height={72}
-                                className="absolute"
+                                className=""
                               />
                             </div>
                           </div>

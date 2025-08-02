@@ -75,7 +75,7 @@ const Page = () => {
         }
       </style>
 
-      <div style="font-family: 'kalpurush', Arial, sans-serif; font-size: 14px !important; line-height: 1.2; color: #333; background-color: #fff; width: 7.9in; height: 11in; border-radius: 10px; border: dotted 1px; padding: 10px; float: left; margin: 30px auto; position: relative;">
+      <div style="font-family: 'kalpurush', Arial, sans-serif; font-size: 14px !important; line-height: 1.2; color: #333; background-color: #eee; width: 700in; height: 11in; border-radius: 10px; border: dotted 1px; padding: 10px; float: left; margin: 30px auto; position: relative;">
         <div class="row">
           <div class="col-md-12">
             <div class="from-controll">
@@ -404,8 +404,7 @@ const Page = () => {
           <div class="col-md-12">
             <div style="width: 350px; float: left" align="left">
               <p style="margin: 0 !important">
-                নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026
-                (অর্থবছর)
+                ffffff
               </p>
               <p class="input_bangla">চালান নং :</p>
               <p>তারিখ :</p>
@@ -503,14 +502,14 @@ const Page = () => {
         <div className="row">
           <div className="col-md-12">
             <div className="portlet box blue">
-              <div className="flex justify-center items-center mb-5">
+              {/* <div className="flex justify-center items-center mb-5">
                 <button
                   onClick={printDiv}
                   className="py-1 px-3 rounded text-white bg-blue-500 border border-blue-500"
                 >
                   প্রিন্ট
                 </button>
-              </div>
+              </div> */}
 
               <div className="portlet-body">
                 {/* <div
