@@ -109,7 +109,7 @@ const UserFileListPage = () => {
             <button
               onClick={() => {
                 closeModal();
-                router.push(`/user-file-download?id=${data.id}`);
+                router.push(`/file-view?id=${data.id}`);
               }}
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >

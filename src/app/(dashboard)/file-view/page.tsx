@@ -2,20 +2,122 @@
 
 import Head from 'next/head';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Cookies from 'js-cookie';
+
+interface Owner {
+  id: string;
+  name: string;
+  share: string;
+}
+
+interface LandInfo {
+  id: string;
+  landClass: string;
+  landAmount: string;
+  stainNo: string;
+}
+
+interface LandForm {
+  id: string;
+  bd_form_no?: string;
+  appendix?: string;
+  serial_no?: string;
+  paragraph_no?: string;
+  office_name?: string;
+  mouzar_no?: string;
+  thana?: string;
+  district?: string;
+  khatian_no?: string;
+  reg_holding_no?: string;
+  total_land_amount?: string;
+  table_row_1?: string;
+  table_row_2?: string;
+  table_row_3?: string;
+  table_row_4?: string;
+  table_row_5?: string;
+  table_row_6?: string;
+  table_row_7?: string;
+  total_where?: string;
+  note?: string;
+  invoice_no?: string;
+  date_bangla?: string;
+  date_english?: string;
+  createdAt: string;
+  owners: Owner[];
+  lands: LandInfo[];
+}
 
 const Dakhila = () => {
-  const printAreaRef = useRef(null);
+  const printAreaRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const [landForm, setLandForm] = useState<LandForm | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchLandForm = async () => {
+      const id = searchParams.get('id');
+      if (!id) {
+        setError('No ID provided');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const token = Cookies.get('auth_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+        const response = await fetch(`${apiUrl}/land-forms/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch land form');
+        }
+
+        const data = await response.json();
+        setLandForm(data);
+      } catch (err) {
+        setError('Failed to load land form data');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLandForm();
+  }, [searchParams]);
 
   const handlePrint = () => {
-    const printContents = printAreaRef.current.innerHTML;
-    const originalContents = document.body.innerHTML;
+    if (printAreaRef.current) {
+      const printContents = printAreaRef.current.innerHTML;
+      const originalContents = document.body.innerHTML;
 
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload();
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !landForm) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl text-red-600">{error || 'Land form not found'}</div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -49,12 +151,12 @@ const Dakhila = () => {
                         <table className="w-full">
                           <tbody>
                             <tr>
-                              <td className="text-left">বাংলাদেশ ফরম নং ১০৭৭</td>
-                              <td className="text-right">(পরিশিষ্ট: ৩৮)</td>
+                              <td className="text-left">বাংলাদেশ ফরম নং {landForm.bd_form_no || '১০৭৭'}</td>
+                              <td className="text-right">(পরিশিষ্ট: {landForm.appendix || '৩৮'})</td>
                             </tr>
                             <tr>
                               <td className="text-left">(সংশোধিত)</td>
-                              <td className="text-right input_bangla">ক্রমিক নং ২৬১২২২০১১৯১৯</td>
+                              <td className="text-right input_bangla">ক্রমিক নং {landForm.serial_no || '২৬১২২২০১১৯১৯'}</td>
                             </tr>
                             <tr>
                               <td className="text-center" colSpan={2}>
@@ -63,7 +165,7 @@ const Dakhila = () => {
                             </tr>
                             <tr>
                               <td className="text-center" colSpan={2}>
-                                (অনুচ্ছেদ ৩৯২ দ্রষ্টব্য)
+                                (অনুচ্ছেদ {landForm.paragraph_no || '৩৯২'} দ্রষ্টব্য)
                               </td>
                             </tr>
                           </tbody>
@@ -78,7 +180,7 @@ const Dakhila = () => {
                                 সিটি কর্পোরেশন/ পৌর/ ইউনিয়ন ভূমি অফিসের নাম:
                               </td>
                               <td className="border-b border-dotted border-black">
-                                মাওনা ইউনিয়ন ভূমি অফিস
+                                {landForm.office_name || 'মাওনা ইউনিয়ন ভূমি অফিস'}
                               </td>
                             </tr>
                           </tbody>
@@ -89,15 +191,15 @@ const Dakhila = () => {
                             <tr>
                               <td className="w-[170px]">মৌজার নাম ও জে. এল. নং:</td>
                               <td className="border-b border-dotted border-black px-2 w-[220px]">
-                                গাজীপুর-৩
+                                {landForm.mouzar_no || 'গাজীপুর-৩'}
                               </td>
                               <td className="w-[100px]">উপজেলা/থানা :</td>
                               <td className="border-b border-dotted border-black px-2 w-[110px]">
-                                শ্রীপুর
+                                {landForm.thana || 'শ্রীপুর'}
                               </td>
                               <td className="w-[40px]">জেলা:</td>
                               <td className="border-b border-dotted border-black px-2">
-                                গাজীপুর
+                                {landForm.district || 'গাজীপুর'}
                               </td>
                             </tr>
                           </tbody>
@@ -108,7 +210,7 @@ const Dakhila = () => {
                             <tr>
                               <td className="w-[230px]">২ নং রেজিস্টার অনুযায়ী হোল্ডিং নম্বর:</td>
                               <td className="border-b border-dotted border-black pl-2 numeric_bangla">
-                                ৬৩১৩
+                                {landForm.reg_holding_no || '৬৩১৩'}
                               </td>
                             </tr>
                           </tbody>
@@ -119,7 +221,7 @@ const Dakhila = () => {
                             <tr>
                               <td className="w-[75px]">খতিয়ান নং:</td>
                               <td className="border-b border-dotted border-black pl-2 numeric_bangla">
-                                ৯৭৩
+                                {landForm.khatian_no || '৯৭৩'}
                               </td>
                             </tr>
                           </tbody>
@@ -145,11 +247,13 @@ const Dakhila = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr className="h-[21px]">
-                                <td className="border border-dotted input_bangla text-center p-1">১</td>
-                                <td className="border border-dotted input_bangla p-1">ফাহিমা খাতুন</td>
-                                <td className="border border-dotted input_bangla text-center p-1">১</td>
-                              </tr>
+                              {landForm.owners.map((owner, index) => (
+                                <tr key={owner.id} className="h-[21px]">
+                                  <td className="border border-dotted input_bangla text-center p-1">{index + 1}</td>
+                                  <td className="border border-dotted input_bangla p-1">{owner.name}</td>
+                                  <td className="border border-dotted input_bangla text-center p-1">{owner.share}</td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
                         </div>
@@ -175,12 +279,14 @@ const Dakhila = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr className="h-[21px]">
-                                <td className="border border-dotted input_bangla text-center p-1">১</td>
-                                <td className="border border-dotted input_bangla p-1">২২৮৭</td>
-                                <td className="border border-dotted p-1">বাড়ী</td>
-                                <td className="border border-dotted input_bangla p-1">৩৫</td>
-                              </tr>
+                              {landForm.lands.map((land, index) => (
+                                <tr key={land.id} className="h-[21px]">
+                                  <td className="border border-dotted input_bangla text-center p-1">{index + 1}</td>
+                                  <td className="border border-dotted input_bangla p-1">{land.stainNo}</td>
+                                  <td className="border border-dotted p-1">{land.landClass}</td>
+                                  <td className="border border-dotted input_bangla p-1">{land.landAmount}</td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
                         </div>
@@ -190,7 +296,7 @@ const Dakhila = () => {
                         <tbody>
                           <tr>
                             <td className="border border-dotted text-center w-1/2 p-1">সর্বমোট জমি (শতক)</td>
-                            <td className="border border-dotted input_bangla w-1/2 p-1">৩৫</td>
+                            <td className="border border-dotted input_bangla w-1/2 p-1">{landForm.total_land_amount || '৩৫'}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -214,20 +320,20 @@ const Dakhila = () => {
                             <td className="text-center p-1">মন্তব্য</td>
                           </tr>
                           <tr>
-                            <td align="center" className="p-1">০</td>
-                            <td align="center" className="p-1">১০৭০</td>
-                            <td align="center" className="p-1">৭২</td>
-                            <td align="center" className="p-1">৩৫০</td>
-                            <td align="center" className="p-1">১৪৯২</td>
-                            <td align="center" className="p-1">১৪৯২</td>
-                            <td align="center" className="p-1">০</td>
-                            <td align="center" className="p-1"></td>
+                            <td align="center" className="p-1">{landForm.table_row_1 || '০'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_2 || '১০৭০'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_3 || '৭২'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_4 || '৩৫০'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_5 || '১৪৯২'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_6 || '১৪৯২'}</td>
+                            <td align="center" className="p-1">{landForm.table_row_7 || '০'}</td>
+                            <td align="center" className="p-1">{landForm.note || ''}</td>
                           </tr>
                         </tbody>
                       </table>
 
                       <p className="border-b border-dotted border-black">
-                        সর্বমোট (কথায়): এক হাজার চার শত বিরানব্বই টাকা মাত্র।
+                        সর্বমোট (কথায়): {landForm.total_where || 'এক হাজার চার শত বিরানব্বই টাকা মাত্র'}।
                       </p>
 
                       <div className="row relative mt-4">
@@ -236,11 +342,11 @@ const Dakhila = () => {
                             <p className="m-0">
                               নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)
                             </p>
-                            <p className="input_bangla mb-0">চালান নং :</p>
+                            <p className="input_bangla mb-0">চালান নং : {landForm.invoice_no || ''}</p>
                             <p className="mt-0">তারিখ :</p>
                             <div className="relative mt-[-37px] ml-2.5">
-                              <p className="w-[115px] p-0 m-0 mb-0.5 ml-9">২৬ আষাঢ় ১৪৩২</p>
-                              <span className="border-t border-solid border-black ml-9 block w-fit">১০ জুলাই ২০২৫</span>
+                              <p className="w-[115px] p-0 m-0 mb-0.5 ml-9">{landForm.date_bangla || '২৬ আষাঢ় ১৪৩২'}</p>
+                              <span className="border-t border-solid border-black ml-9 block w-fit">{landForm.date_english || '১০ জুলাই ২০২৫'}</span>
                               <p />
                             </div>
                             <p />
