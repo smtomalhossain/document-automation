@@ -23,7 +23,7 @@ const Page = () => {
       <style type="text/css">
         body {
           font-family: "kalpurush", Arial, sans-serif;
-          font-size: 13px !important;
+          font-size: 11px !important;
           line-height: 1.2;
           color: #333;
           background-color: #fff;
@@ -75,7 +75,7 @@ const Page = () => {
         }
       </style>
 
-      <div style="font-family: 'kalpurush', Arial, sans-serif; font-size: 14px !important; line-height: 1.2; color: #333; background-color: #eee; width: 700in; height: 11in; border-radius: 10px; border: dotted 1px; padding: 10px; float: left; margin: 30px auto; position: relative;">
+      <div style="font-family: 'kalpurush', Arial, sans-serif; font-size: 12px !important; line-height: 1.2; color: #333; background-color: #eee; width: 700in; height: 11in; border-radius: 10px; border: dotted 1px; padding: 10px; float: left; margin: 30px auto; position: relative;">
         <div class="row">
           <div class="col-md-12">
             <div class="from-controll">

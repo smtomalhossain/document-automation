@@ -95,11 +95,59 @@ const Dakhila = () => {
     if (printAreaRef.current) {
       const printContents = printAreaRef.current.innerHTML;
       const originalContents = document.body.innerHTML;
-
-      document.body.innerHTML = printContents;
+      
+      document.body.innerHTML = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>ভূমি উন্নয়ন কর রসিদ</title>
+            <style>
+              @page { size: 8in 11in;margin: 0; }
+              body { 
+                border: 1px dotted;
+                border-radius: 0.5rem;
+                font-family: 'Kalpurush', 'Bangla', Arial, sans-serif;
+                font-size: 12px;
+                line-height: 1.2;
+                width: 8in;
+                height: 11in;
+                margin: 0px;
+                padding: 10px;
+              }
+              table { 
+                border-collapse: collapse;
+                width: 100%;
+                margin-bottom: 5px;
+                
+              }
+            
+              .bangla-text { font-family: 'Kalpurush', 'Bangla', Arial; }
+              .border-dotted { border-bottom: 1px dotted black; }
+              .no-border { border: none !important; }
+              .text-left { text-align: left; }
+              .text-right { text-align: right; }
+              .text-center { text-align: center; }
+              .w-full { width: 100%; }
+              .mt-1 { margin-top: 4px;  }
+              .mt-2 { margin-top: 8px;  }
+              .p-1 { padding: 4px; }
+              .underline { text-decoration: underline; }
+              .qr-code { width: 70px; height: 70px; }
+            </style>
+          </head>
+          <body>
+            ${printContents}
+            <script>
+              setTimeout(() => {
+                window.print();
+                window.close();
+              }, 200);
+            </script>
+          </body>
+        </html>
+      `;
       window.print();
       document.body.innerHTML = originalContents;
-      window.location.reload();
     }
   };
 
