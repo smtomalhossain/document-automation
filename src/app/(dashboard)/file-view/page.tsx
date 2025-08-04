@@ -2,7 +2,7 @@
 
 import Head from 'next/head';
 import Image from 'next/image';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 
@@ -49,7 +49,7 @@ interface LandForm {
   lands: LandInfo[];
 }
 
-const Dakhila = () => {
+const DakhilaContent = () => {
   const printAreaRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const [landForm, setLandForm] = useState<LandForm | null>(null);
@@ -440,6 +440,18 @@ const Dakhila = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const Dakhila = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    }>
+      <DakhilaContent />
+    </Suspense>
   );
 };
 

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Cookies from "js-cookie";
-import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Modal from "@/components/Modal";
 
@@ -46,9 +45,19 @@ const initialForm: { [key: string]: string } = {
 const requiredFields = Object.keys(initialForm);
 
 const BanglaLandForm = () => {
-    const searchParams = useSearchParams();
-    const id = searchParams.get("id");
-    const mode = searchParams.get("mode") || "create";
+    const [params, setParams] = useState<{ id?: string; mode?: string }>({});
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        setParams({
+            id: urlParams.get("id") || undefined,
+            mode: urlParams.get("mode") || "create",
+        });
+    }, []);
+
+    const id = params.id;
+    const mode = params.mode;
+
     const isUpdate = mode === "update" && !!id;
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState(initialForm);
@@ -62,6 +71,7 @@ const BanglaLandForm = () => {
 
     //
     const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+
 
 
     useEffect(() => {
@@ -216,7 +226,7 @@ const BanglaLandForm = () => {
 
     return (
         <form
-            onSubmit={handleFormSubmit }
+            onSubmit={handleFormSubmit}
             className="bg-white p-6 mx-4 rounded-md mt-9 grid grid-cols-1 md:grid-cols-2 gap-6"
         >
             {/* Left Column - General Info */}
