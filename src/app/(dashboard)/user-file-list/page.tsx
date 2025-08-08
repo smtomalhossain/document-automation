@@ -11,16 +11,16 @@ import { useRouter } from "next/navigation";
 type Assignments = {
   id: string;
   sl: number;
-  serialNo: string;
+  mouzar_no: string;
   khatianNo: string;
   CreateDate: string;
 };
 
 const columns = [
   { header: "SL", accessor: "sl" },
-  { header: "Serial No", accessor: "serialNo", className: "hidden md:table-cell" },
-  { header: "Khatian No.", accessor: "khatianNo", className: "hidden md:table-cell" },
-  { header: "Date", accessor: "CreateDate", className: "hidden md:table-cell" },
+  { header: "Mouzar No", accessor: "mouzar_no", className: " md:table-cell" },
+  { header: "Khatian No.", accessor: "khatianNo", className: " md:table-cell" },
+  { header: "Date", accessor: "CreateDate", className: " md:table-cell" },
   { header: "Actions", accessor: "actions", className: "text-right" },
 ];
 
@@ -47,7 +47,7 @@ const UserFileListPage = () => {
         const mapped = json.map((item: any, index: number) => ({
           id: item.id,
           sl: index + 1,
-          serialNo: item.serial_no,
+          mouzar_no: item.mouzar_no,
           khatianNo: item.khatian_no,
           CreateDate: item.date_english,
         }));
@@ -105,7 +105,7 @@ const UserFileListPage = () => {
       case "download":
         return (
           <>
-            <p>আপনি কি <strong>{data.serialNo}</strong> সিরিয়াল নাম্বারটি ডাউনলোড করতে চান?</p>
+            <p>আপনি কি <strong>{data.mouzar_no}</strong> সিরিয়াল নাম্বারটি ডাউনলোড করতে চান?</p>
             <button
               onClick={() => {
                 closeModal();
@@ -132,7 +132,7 @@ const UserFileListPage = () => {
       case "delete":
         return (
           <>
-            <p>আপনি কি নিশ্চিতভাবে <strong>{data.serialNo}</strong> মুছে ফেলতে চান?</p>
+            <p>আপনি কি নিশ্চিতভাবে <strong>{data.mouzar_no}</strong> মুছে ফেলতে চান?</p>
             <button
               onClick={handleDelete}
               className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -150,9 +150,9 @@ const UserFileListPage = () => {
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-300 transition-colors duration-200"
     >
       <td className="p-4">{item.sl}</td>
-      <td className="hidden md:table-cell">{item.serialNo}</td>
-      <td className="hidden md:table-cell">{item.khatianNo}</td>
-      <td className="hidden md:table-cell">{item.CreateDate}</td>
+      <td className="md:table-cell">{item.mouzar_no}</td>
+      <td className="md:table-cell">{item.khatianNo}</td>
+      <td className="md:table-cell">{item.CreateDate}</td>
       <td className="text-right">
         <div className="flex justify-end items-center gap-3 mx-2">
           <button

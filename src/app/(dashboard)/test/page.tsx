@@ -63,13 +63,7 @@ const LandTaxReceipt = () => {
                         .table-bordered {
                           border: 1px solid #ddd;
                         }
-                        .qrcode-print {
-                          width: 100%;
-                          display: list-item;
-                          list-style-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEoAAABKAQMAAAAmHlAyAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA8ElEQVQokZXRMaoEMQgGYCGt4FWEtEKuLqQVvIowrZDNzD5m13nVWn1FYv4owA9Fa3ZevLIQwTHcFCtzggxxe9AUGP9xxgp+EmyI/vW9ScvOeme4CdBQPd4xb1IucVydC2ECHEsiK8VSm0+unCyxOLSw9akUc0AhGfZ9QKUQD0v0FlxIRLl/iloIPZNiCRciNhfhKYUc0rq2xoVtP01HiBaieQ70q9mHBMxH9qvZh3uFSZPOQX3zEJyNh1buJL7nj4XnYo5EssK9rAQSi0IEvXJaZTr38JQn91T3vQfNhuvUSnAfjalyP8xLr6F+8Yd6AR4WG0gOJqA4AAAAAElFTkSuQmCC);
-                          list-style-position: inside;
-                          background-repeat: no-repeat;
-                        }
+                        
                         .b1 {
                           border: 1px dotted;
                           padding: 2px;
@@ -226,30 +220,30 @@ const LandTaxReceipt = () => {
 
                       <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
                         <tbody>
-                          <tr>
-                            <th className="text-center" colSpan={8}>
+                          <tr className='border-b border-gray-300 hover:bg-gray-50'>
+                            <th className="text-center p-3 border bg-gray-50 border-gray-300" colSpan={8}>
                               আদায়ের বিবরণ
                             </th>
                           </tr>
-                          <tr>
-                            <td className="text-center">তিন বৎসরের ঊর্ধ্বের বকেয়া</td>
-                            <td className="text-center">গত তিন বৎসরের বকেয়া</td>
-                            <td className="text-center">বকেয়ার জরিমানা ও ক্ষতিপূরণ</td>
-                            <td className="text-center">হাল দাবি</td>
-                            <td className="text-center">মোট দাবি</td>
-                            <td className="text-center">মোট আদায়</td>
-                            <td className="text-center">মোট বকেয়া</td>
-                            <td className="text-center">মন্তব্য</td>
+                          <tr className='"border-b border-gray-300 hover:bg-gray-50 "'>
+                            <td className="text-center p-3 border border-gray-300">তিন বৎসরের ঊর্ধ্বের বকেয়া</td>
+                            <td className="text-center p-3 border border-gray-300">গত তিন বৎসরের বকেয়া</td>
+                            <td className="text-center p-3 border border-gray-300">বকেয়ার জরিমানা ও ক্ষতিপূরণ</td>
+                            <td className="text-center p-3 border border-gray-300">হাল দাবি</td>
+                            <td className="text-center p-3 border border-gray-300">মোট দাবি</td>
+                            <td className="text-center p-3 border border-gray-300">মোট আদায়</td>
+                            <td className="text-center p-3 border border-gray-300">মোট বকেয়া</td>
+                            <td className="text-center p-3 border border-gray-300">মন্তব্য</td>
                           </tr>
-                          <tr>
-                            <td className="text-center">৭৭০</td>
-                            <td className="text-center">৪২০</td>
-                            <td className="text-center">৩৬৫</td>
-                            <td className="text-center">১৪০</td>
-                            <td className="text-center">১,৬৯৫</td>
-                            <td className="text-center">১,৬৯৫</td>
-                            <td className="text-center">০</td>
-                            <td className="text-center"></td>
+                          <tr className="border-b border-gray-300 hover:bg-gray-50 bg-gray-50">
+                            <td className="text-center p-3 border border-gray-300">৭৭০</td>
+                            <td className="text-center p-3 border border-gray-300">৪২০</td>
+                            <td className="text-center p-3 border border-gray-300">৩৬৫</td>
+                            <td className="text-center p-3 border border-gray-300">১৪০</td>
+                            <td className="text-center p-3 border border-gray-300">১,৬৯৫</td>
+                            <td className="text-center p-3 border border-gray-300">১,৬৯৫</td>
+                            <td className="text-center p-3 border border-gray-300">০</td>
+                            <td className="text-center p-3 border border-gray-300"></td>
                           </tr>
                         </tbody>
                       </table>
@@ -259,44 +253,52 @@ const LandTaxReceipt = () => {
                         </p>
                       </div>
 
-                      <div className="flex mt-4">
-                        <div className="w-[350px]">
-                          <p className="m-0">
-                            নোট: সর্বশেষ কর পরিশোধের সাল - 2022-2023 (অর্থবছর)
-                          </p>
-                          <p className="input_bangla">চালান নং : 2223-0011416314</p>
-                          <p>তারিখ :</p>
-                          <div className="mt-[-37px] ml-2.5">
-                            <p className="w-[115px] p-0 m-0 ml-[38px] mb-0.5">
-                              ৫ মাঘ ১৪২৯
-                            </p>
-                            <span className="border-t border-solid ml-[36px]">
-                              ১৮ জানুয়ারী, ২০২৩
-                            </span>
-                          </div>
-                        </div>
+                      <div className="flex">
+  <div className="w-full">
+    <div className="flex">
+      {/* Left Section */}
+      <div className="w-[350px] float-left text-left">
+        <p className="mt-3">
+          নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)
+        </p>
+        <p className="font-bangla ">চালান নং :</p>
+        <p className='mt-2'>তারিখ :</p>
+        <div className="mt-[-25px] ml-[10px]">
+          <p className="w-[115px] p-0 m-0 ml-[38px] mb-[2px]">
+            ২৬ আষাঢ় ১৪৩২
+          </p>
+          <span className="border-t border-black ml-[36px]">
+            ১০ জুলাই ২০২৫
+          </span>
+        </div>
+      </div>
 
-                        <div className="w-[90px]">
-                          <div className="qrcode-print">
-                            <img
-                              src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=kLF0ZoRnGrwMxYNHgiJlzJjUTVmT0T09&bgcolor=FFFFFF&format=png"
-                              className="w-[67px] h-[67px]"
-                              alt="QR Code"
-                            />
-                          </div>
-                        </div>
+      {/* QR Code Section */}
+      <div className="w-[90px] m-3 flex justify-center items-center">
+  <div className="w-[72px] h-[72px]">
+    <img 
+      src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&amp;data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=GUPMYgpmETKVAmKwih8UyJM86GwtST09&amp;bgcolor=FFFFFF&amp;format=png"
+      className="w-full h-full"
+      alt="QR Code"
+    />
+  </div>
+</div>
 
-                        <div className="w-[265px] text-right text-xs">
-                          <p className="text-center p-1">
-                            এই দাখিলা ইলেক্ট্রনিকভাবে তৈরি করা হয়েছে, <br /> কোন
-                            স্বাক্ষর প্রয়োজন নেই।
-                          </p>
-                        </div>
-                      </div>
+      {/* Right Section */}
+      <div className="w-[265px] mt-3 float-right text-right text-xs font-sans">
+        <p className="text-center p-[5px]">
+          এই দাখিলা ইলেক্ট্রনিকভাবে তৈরি করা হয়েছে,
+          <br />
+          কোন স্বাক্ষর প্রয়োজন নেই।
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
-                      <div className="w-full border-t border-dotted border-gray-500 mt-3.5 absolute bottom-0 right-0">
-                        <div className="text-right">1/1</div>
-                      </div>
+                      <div className="w-[calc(100%-20px)] border-t border-dotted border-gray-500 mt-3.5 absolute bottom-0 left-[10px] right-[10px]">
+  <div className="text-right">1/1</div>
+</div>
                     </div>
                   </div>
                 </div>

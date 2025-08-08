@@ -184,14 +184,18 @@ const DakhilaContent = () => {
             <div className="row">
               <div className="col-md-12">
                 <div className="portlet box blue">
-                  <div className="flex justify-center items-center mb-5">
+                  <div className='bg-white pb-1 mx-4 border-1 rounded-lg border-blue-500'>
+                    <div className="flex justify-center items-center mb-5 border-1 border-blue-500  p-1 rounded-t-lg bg-blue-500">
                     <button
                       onClick={handlePrint}
-                      className="px-3 py-1 rounded-md text-white bg-blue-500 border border-blue-500 hover:bg-blue-600"
+                      className="px-3 py-1 rounded-md text-white bg-blue-500"
                     >
                       প্রিন্ট
                     </button>
+                    
                   </div>
+                  </div>
+                  
 
                   <div className="flex justify-center items-center">
                     <div id="printArea" ref={printAreaRef} className="font-sans text-[12px] leading-[1.2] text-gray-700 bg-white w-[8in] h-[11in] rounded-lg border border-dotted p-[10px] float-left my-[30px] mx-auto relative">

@@ -82,7 +82,7 @@ function Navbar() {
 
             {/* Sidebar Overlay & Slide Panel */}
             <div
-                className={`fixed inset-0 z-50  transition-opacity duration-300 md:hidden ${isMenuOpen ? "bg-opacity-50 pointer-events-auto" : "bg-opacity-0 pointer-events-none"
+                className={`fixed inset-0 z-50  transition-opacity duration-300 lg:hidden ${isMenuOpen ? "bg-opacity-50 pointer-events-auto" : "bg-opacity-50 pointer-events-none"
                     }`}
                 onClick={handleClick}
             >

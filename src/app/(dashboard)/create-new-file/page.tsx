@@ -17,7 +17,7 @@ interface LandInfo {
 }
 
 const initialForm: { [key: string]: string } = {
-    bd_form_no: "887766",
+    bd_form_no: "১০৭৭",
     appendix: "৩৮",
     serial_no: "২৬১২২২০১১৯১৯",
     paragraph_no: "৩৯২",
@@ -36,7 +36,7 @@ const initialForm: { [key: string]: string } = {
     table_row_6: "৬,৮০৭",
     table_row_7: "০",
     total_where: "ছয় হাজার আট শত সাত টাকা মাত্র ।",
-    note: "সর্বশেষ কর পরিশোধের সাল - 2024-2025 (অর্থবছর)",
+    note: "সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)",
     invoice_no: "2324-0007831288",
     date_bangla: "২০ আষাঢ় ১৪৩১",
     date_english: "০৪ জুলাই, ২০২৪",
