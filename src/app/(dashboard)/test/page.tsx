@@ -1,6 +1,9 @@
 "use client";
 
+import Image from 'next/image';
 import React from 'react';
+import LandTableGrid from '@/components/LandTableGrid';
+import OwnerTableGrid from '@/components/OwnerTableGrid';
 
 const LandTaxReceipt = () => {
   const handlePrint = () => {
@@ -8,13 +11,43 @@ const LandTaxReceipt = () => {
     const originalContents = document.body.innerHTML;
 
     document.body.innerHTML = printContents;
-    setTimeout(() => {}, 500);
+    setTimeout(() => { }, 500);
     window.print();
 
     document.body.innerHTML = originalContents;
   };
 
+  const tableData = [
+    [
+      { col1: "১", col2: "2591", col3: "চালা( কৃষি২)", col4: "70" },
+      { col1: "২", col2: "2592", col3: "বাড়ি", col4: "50" }
+    ],
+    [
+      { col1: "3", col2: "1591", col3: "চালা", col4: "40" },
+      { col1: "4", col2: "1592", col3: "পুকুর", col4: "20" },
+      { col1: "5", col2: "3591", col3: "বাগান", col4: "60" }
+
+    ],
+    
+  ];
+
+  const ownerTablesData = [
+  [
+    { col1: "১", col2: "কাজী মোতাহার হোসেন", col3: "১" },
+    { col1: "২", col2: "মো. রাশেদ", col3: "২" },
+  ],
+  [
+    { col1: "১", col2: "রুবিনা আক্তার", col3: "৩" },
+    { col1: "২", col2: "আবুল কাশেম", col3: "৪" },
+    { col1: "৩", col2: "আবুল কাশেম", col3: "৪" },
+  ],
+  
+];
+
+
+
   return (
+    
     <div className="page-container">
       <div className="page-content">
         <div className="row">
@@ -169,7 +202,7 @@ const LandTaxReceipt = () => {
                         <u>মালিকের বিবরণ</u>
                       </p>
 
-                      <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
+                      {/* <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
                         <thead>
                           <tr>
                             <th className="b1 text-center w-[10%]">ক্রমঃ</th>
@@ -184,30 +217,20 @@ const LandTaxReceipt = () => {
                             <td className="b1 input_bangla text-center">১</td>
                           </tr>
                         </tbody>
-                      </table>
+                      </table> */}
+
+                      <div className="">
+      <OwnerTableGrid tables={ownerTablesData} />
+    </div>
 
                       <p className="font-bold text-xs text-center m-0 p-0">
                         <u>জমির বিবরণ</u>
                       </p>
 
-                      <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
-                        <thead>
-                          <tr>
-                            <th className="b1">ক্রমঃ</th>
-                            <th className="b1">দাগ নং</th>
-                            <th className="b1">জমির শ্রেণী</th>
-                            <th className="b1">জমির পরিমাণ (শতাংশ)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="h-[21px]">
-                            <td className="b1 input_bangla text-center">১</td>
-                            <td className="b1 input_bangla">2591</td>
-                            <td className="b1">চালা( কৃষি২)</td>
-                            <td className="b1 input_bangla">70</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                       <div className="">
+      <LandTableGrid tables={tableData} />
+    </div>
+
                       <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
                         <tbody>
                           <tr>
@@ -254,51 +277,53 @@ const LandTaxReceipt = () => {
                       </div>
 
                       <div className="flex">
-  <div className="w-full">
-    <div className="flex">
-      {/* Left Section */}
-      <div className="w-[350px] float-left text-left">
-        <p className="mt-3">
-          নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)
-        </p>
-        <p className="font-bangla ">চালান নং :</p>
-        <p className='mt-2'>তারিখ :</p>
-        <div className="mt-[-25px] ml-[10px]">
-          <p className="w-[115px] p-0 m-0 ml-[38px] mb-[2px]">
-            ২৬ আষাঢ় ১৪৩২
-          </p>
-          <span className="border-t border-black ml-[36px]">
-            ১০ জুলাই ২০২৫
-          </span>
-        </div>
-      </div>
+                        <div className="w-full">
+                          <div className="flex">
+                            {/* Left Section */}
+                            <div className="w-[350px] float-left text-left">
+                              <p className="mt-3">
+                                নোট: সর্বশেষ কর পরিশোধের সাল - 2025-2026 (অর্থবছর)
+                              </p>
+                              <p className="font-bangla ">চালান নং :</p>
+                              <p className='mt-2'>তারিখ :</p>
+                              <div className="mt-[-25px] ml-[10px]">
+                                <p className="w-[115px] p-0 m-0 ml-[38px] mb-[2px]">
+                                  ২৬ আষাঢ় ১৪৩২
+                                </p>
+                                <span className="border-t border-black ml-[36px]">
+                                  ১০ জুলাই ২০২৫
+                                </span>
+                              </div>
+                            </div>
 
-      {/* QR Code Section */}
-      <div className="w-[90px] m-3 flex justify-center items-center">
-  <div className="w-[72px] h-[72px]">
-    <img 
-      src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&amp;data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=GUPMYgpmETKVAmKwih8UyJM86GwtST09&amp;bgcolor=FFFFFF&amp;format=png"
-      className="w-full h-full"
-      alt="QR Code"
-    />
-  </div>
-</div>
+                            {/* QR Code Section */}
+                            <div className="w-[90px] m-3 flex justify-center items-center">
+                              <div className="w-[72px] h-[72px]">
+                                <Image
+                                  width={72}
+                                  height={72}
+                                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&amp;data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=GUPMYgpmETKVAmKwih8UyJM86GwtST09&amp;bgcolor=FFFFFF&amp;format=png"
+                                  className="w-full h-full"
+                                  alt="QR Code"
+                                />
+                              </div>
+                            </div>
 
-      {/* Right Section */}
-      <div className="w-[265px] mt-3 float-right text-right text-xs font-sans">
-        <p className="text-center p-[5px]">
-          এই দাখিলা ইলেক্ট্রনিকভাবে তৈরি করা হয়েছে,
-          <br />
-          কোন স্বাক্ষর প্রয়োজন নেই।
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+                            {/* Right Section */}
+                            <div className="w-[265px] mt-3 float-right text-right text-xs font-sans">
+                              <p className="text-center p-[5px]">
+                                এই দাখিলা ইলেক্ট্রনিকভাবে তৈরি করা হয়েছে,
+                                <br />
+                                কোন স্বাক্ষর প্রয়োজন নেই।
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
                       <div className="w-[calc(100%-20px)] border-t border-dotted border-gray-500 mt-3.5 absolute bottom-0 left-[10px] right-[10px]">
-  <div className="text-right">1/1</div>
-</div>
+                        <div className="text-right">1/1</div>
+                      </div>
                     </div>
                   </div>
                 </div>
