@@ -7,10 +7,10 @@ import OwnerTableGrid from '@/components/OwnerTableGrid';
 
 const LandTaxReceipt = () => {
   const handlePrint = () => {
-    const printContents = document.getElementById('printArea').innerHTML;
+    const printContents = document.getElementById('printArea')?.innerHTML;
     const originalContents = document.body.innerHTML;
 
-    document.body.innerHTML = printContents;
+    document.body.innerHTML = printContents || '';
     setTimeout(() => { }, 500);
     window.print();
 
@@ -26,30 +26,25 @@ const LandTaxReceipt = () => {
     [
       { col1: "3", col2: "1591", col3: "চালা", col4: "40" },
       { col1: "4", col2: "1592", col3: "পুকুর", col4: "20" },
-      
-
     ],
-    
   ];
 
   const ownerTablesData = [
-  [
-    { col1: "১", col2: "কাজী মোতাহার হোসেন", col3: "১" },
-    { col1: "২", col2: "মো. রাশেদ", col3: "২" },
-    { col1: "৩", col2: "আবুল কাশেম", col3: "৪" },
-
-  ],
-  [
-    { col1: "১", col2: "রুবিনা আক্তার", col3: "৩" },
-    { col1: "২", col2: "আবুল কাশেম", col3: "৪" },
-  ],
-  
-];
+    [
+      { col1: "১", col2: "কাজী মোতাহার হোসেন", col3: "১" },
+      { col1: "২", col2: "মো. রাশেদ", col3: "২" },
+      { col1: "৩", col2: "আবুল কাশেম", col3: "৪" },
+    ],
+    [
+      { col1: "১", col2: "রুবিনা আক্তার", col3: "৩" },
+      { col1: "২", col2: "আবুল কাশেম", col3: "৪" },
+    ],
+  ];
 
 
 
   return (
-    
+
     <div className="page-container">
       <div className="page-content">
         <div className="row">
@@ -222,16 +217,16 @@ const LandTaxReceipt = () => {
                       </table> */}
 
                       <div className="">
-      <OwnerTableGrid tables={ownerTablesData} />
-    </div>
+                        <OwnerTableGrid tables={ownerTablesData} />
+                      </div>
 
                       <p className="font-bold text-xs text-center m-0 p-0">
                         <u>জমির বিবরণ</u>
                       </p>
 
-                       <div className="">
-      <LandTableGrid tables={tableData} />
-    </div>
+                      <div className="">
+                        <LandTableGrid tables={tableData} />
+                      </div>
 
                       <table className="border border-dotted border-collapse my-2.5 mx-0.5 w-full text-xs">
                         <tbody>
