@@ -50,19 +50,22 @@ const LandTaxReceipt = () => {
 
   return (
     
-    <div className="page-container">
+    <div className="page-container bg-[#f4ffe6]">
       <div className="page-content">
         <div className="row">
           <div className="col-md-12">
             <div className="portlet box blue">
-              <div className="flex justify-center items-center mb-5">
-                <button
-                  onClick={handlePrint}
-                  className="px-3 py-1 rounded text-white bg-blue-500 border-blue-500"
-                >
-                  প্রিন্ট
-                </button>
-              </div>
+             <div className='bg-white pb-1 mx-4 border-1 rounded-lg border-blue-500 mt-14'>
+                    <div className="flex justify-center items-center mb-5 border-1 border-blue-500  p-1 rounded-t-lg bg-blue-500">
+                    <button
+                      onClick={handlePrint}
+                      className="px-3 py-2 shadow-md cursor-pointer rounded-md text-white bg-blue-500"
+                    >
+                      প্রিন্ট
+                    </button>
+                    
+                  </div>
+                  </div>
 
               <div className="portlet-body">
                 <div id="printArea" className="w-[815px] mx-auto">
