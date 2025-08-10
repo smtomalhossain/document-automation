@@ -13,7 +13,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   // Hide layout on /login and /test pages
-  const hideLayout = pathname === "/login" || pathname === "/test";
+  const hideLayout = pathname === "/login" || pathname === "/file-view";
 
   // If path starts with /admin, link to /admin, else to /create-new-file
   const isAdmin = pathname.startsWith("/admin");
