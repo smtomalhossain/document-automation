@@ -7,6 +7,14 @@ import LandTableGrid from '@/components/LandTableGrid';
 import OwnerTableGrid from '@/components/OwnerTableGrid';
 import Cookies from 'js-cookie';
 
+function toBanglaNumber(num: number): string {
+  const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+  return num
+    .toString()
+    .split("")
+    .map(d => banglaDigits[parseInt(d)])
+    .join("");
+}
 
 interface Owner {
   id: string;
@@ -81,6 +89,7 @@ const LandTaxReceipt = () => {
 
         const data = await response.json();
         setLandForm(data);
+
       } catch (err) {
         setError('Failed to load land form data');
         console.error(err);
@@ -93,44 +102,94 @@ const LandTaxReceipt = () => {
   }, [searchParams]);
 
   const handlePrint = () => {
-    const printContents = document.getElementById('printArea').innerHTML;
+    const printContents = document.getElementById('printArea')?.innerHTML;
     const originalContents = document.body.innerHTML;
 
-    document.body.innerHTML = printContents;
+    document.body.innerHTML = printContents ?? '';
     setTimeout(() => { }, 500);
     window.print();
 
     document.body.innerHTML = originalContents;
   };
 
-  const tableData = [
-    [
-      { col1: "১", col2: "2591", col3: "চালা( কৃষি২)", col4: "70" },
-      { col1: "২", col2: "2592", col3: "বাড়ি", col4: "50" },
-      { col1: "5", col2: "3591", col3: "বাগান", col4: "60" }
-    ],
-    [
-      { col1: "3", col2: "1591", col3: "চালা", col4: "40" },
-      { col1: "4", col2: "1592", col3: "পুকুর", col4: "20" },
 
 
-    ],
+  // owners table ---------------------------
+  type OwnerTableRow = {
+    col1: string;
+    col2: string;
+    col3: string;
+  }
+  const ownerTableDataLeft: OwnerTableRow[] = [];
+  const ownerTableDataRight: OwnerTableRow[] = [];
 
-  ];
+  var owners = landForm?.owners ?? [];
+  for (let i = 0; i < (owners.length ?? 0); i++) {
+    if (i % 2 === 0) {
+      var owner = owners[i];
+      ownerTableDataLeft.push({
+        col1: toBanglaNumber(i + 1),
+        col2: owner.name,
+        col3: owner.share,
+      });
+    }
+    else {
+      var owner = owners[i];
+      ownerTableDataRight.push({
+        col1: toBanglaNumber(i + 1),
+        col2: owner.name,
+        col3: owner.share,
+      });
+    }
+  }
 
   const ownerTablesData = [
-    [
-      { col1: "১", col2: "কাজী মোতাহার হোসেন", col3: "১" },
-      { col1: "২", col2: "মো. রাশেদ", col3: "২" },
-      { col1: "৩", col2: "আবুল কাশেম", col3: "৪" },
-
-    ],
-    [
-      { col1: "১", col2: "রুবিনা আক্তার", col3: "৩" },
-      { col1: "২", col2: "আবুল কাশেম", col3: "৪" },
-    ],
-
+    ownerTableDataLeft,
   ];
+
+  if (ownerTableDataRight.length > 0) {
+    ownerTablesData.push(ownerTableDataRight);
+  }
+
+
+    type TableRow = {
+    col1: string;
+    col2: string;
+    col3: string;
+    col4: string;
+  };
+  const tableDataLeft: TableRow[] = [];
+  const tableDataRight: TableRow[] = [];
+
+  var lands = landForm?.lands ?? [];
+  for (let i = 0; i < (lands.length ?? 0); i++) {
+    if (i % 2 === 0) {
+      var land = lands[i];
+      tableDataLeft.push({
+        col1: toBanglaNumber(i + 1),
+        col2: land.stainNo,
+        col3: land.landClass,
+        col4: land.landAmount,
+      });
+    }
+    else {
+      var land = lands[i];
+      tableDataRight.push({
+        col1: toBanglaNumber(i + 1),
+        col2: land.stainNo,
+        col3: land.landClass,
+        col4: land.landAmount,
+      });
+    }
+  }
+
+  const tableData = [
+    tableDataLeft,
+  ];
+
+  if (tableDataRight.length > 0) {
+    tableData.push(tableDataRight);
+  }
 
   if (loading) {
     return (
@@ -307,7 +366,7 @@ const LandTaxReceipt = () => {
                         <u>মালিকের বিবরণ</u>
                       </p>
 
-                      
+
 
                       <div className="">
                         <OwnerTableGrid tables={ownerTablesData} />
