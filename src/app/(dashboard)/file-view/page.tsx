@@ -59,7 +59,7 @@ interface LandForm {
   lands: LandInfo[];
 }
 
-const LandTaxReceipt = () => {
+const LandTaxReceiptContent = () => {
   const searchParams = useSearchParams();
   const [landForm, setLandForm] = useState<LandForm | null>(null);
   const [loading, setLoading] = useState(true);
@@ -369,7 +369,7 @@ const LandTaxReceipt = () => {
 
 
                       <div className="">
-                        <OwnerTableGrid tables={ownerTablesData} />
+                        <OwnerTableGrid tables={ownerTablesData as any} />
                       </div>
 
                       <p className="font-bold text-xs text-center m-0 p-0">
@@ -482,6 +482,18 @@ const LandTaxReceipt = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LandTaxReceipt = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    }>
+      <LandTaxReceiptContent />
+    </Suspense>
   );
 };
 
