@@ -9,8 +9,8 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    username: "anik@gmail.com",
-    password: "123456",
+    username: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
