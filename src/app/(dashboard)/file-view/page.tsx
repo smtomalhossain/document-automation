@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import LandTableGrid from '@/components/LandTableGrid';
 import OwnerTableGrid from '@/components/OwnerTableGrid';
 import Cookies from 'js-cookie';
+import { encode } from 'punycode';
 
 function toBanglaNumber(num: number): string {
   const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -69,7 +70,10 @@ const LandTaxReceiptContent = () => {
 
   useEffect(() => {
     // setCurrentUrl(window.location.href);
-    setQrUrl(`https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}&amp;size=140x140`);
+    const text = window.location.href;
+    const encoded = encodeURIComponent(text);
+
+    setQrUrl(`https://api.qrserver.com/v1/create-qr-code/?data=${encoded}&amp;size=140x140`);
   }, []);
 
 
@@ -458,9 +462,9 @@ const LandTaxReceiptContent = () => {
                             <div className="w-[90px] m-3 flex justify-center items-center">
                               <div className="w-[72px] h-[72px]">
                                 {qrUrl && (
-                                  <Image
+                                  <img
                                     width={72}
-                                    height={72}
+                                    height={72} 
                                     src={qrUrl}
                                     className="w-full h-full"
                                     alt="QR Code"
