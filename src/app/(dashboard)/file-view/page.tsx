@@ -64,6 +64,15 @@ const LandTaxReceiptContent = () => {
   const [landForm, setLandForm] = useState<LandForm | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // const [currentUrl, setCurrentUrl] = useState('');
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // setCurrentUrl(window.location.href);
+    setQrUrl(`https://api.qrserver.com/v1/create-qr-code/?data=${window.location.href}&amp;size=140x140`);
+  }, []);
+
+
 
   useEffect(() => {
     const fetchLandForm = async () => {
@@ -152,7 +161,7 @@ const LandTaxReceiptContent = () => {
   }
 
 
-    type TableRow = {
+  type TableRow = {
     col1: string;
     col2: string;
     col3: string;
@@ -448,13 +457,15 @@ const LandTaxReceiptContent = () => {
                             {/* QR Code Section */}
                             <div className="w-[90px] m-3 flex justify-center items-center">
                               <div className="w-[72px] h-[72px]">
-                                <Image
-                                  width={72}
-                                  height={72}
-                                  src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&amp;data=https://dakhila.ldtax.gov.bd.verufl.sa.com/dakhila-print?id=GUPMYgpmETKVAmKwih8UyJM86GwtST09&amp;bgcolor=FFFFFF&amp;format=png"
-                                  className="w-full h-full"
-                                  alt="QR Code"
-                                />
+                                {qrUrl && (
+                                  <Image
+                                    width={72}
+                                    height={72}
+                                    src={qrUrl}
+                                    className="w-full h-full"
+                                    alt="QR Code"
+                                  />
+                                )}
                               </div>
                             </div>
 
