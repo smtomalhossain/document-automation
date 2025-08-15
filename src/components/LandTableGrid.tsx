@@ -1,6 +1,17 @@
 import React from "react";
 
-export default function LandTableGrid({ tables }) {
+interface LandRow {
+  col1: string;
+  col2: string;
+  col3: string;
+  col4: string;
+}
+
+interface LandTableGridProps {
+  tables: LandRow[][];
+}
+
+export default function LandTableGrid({ tables }: LandTableGridProps) {
   return (
     <div
       className={`grid gap-1 ${
@@ -44,4 +55,4 @@ export default function LandTableGrid({ tables }) {
       ))}
     </div>
   );
-}
+} 

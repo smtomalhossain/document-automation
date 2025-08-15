@@ -1,8 +1,18 @@
 import React from "react";
 
-export default function OwnerTableGrid({ tables = [] }) {
+interface OwnerRow {
+  col1: string;
+  col2: string;
+  col3: string;
+}
+
+interface OwnerTableGridProps {
+  tables: OwnerRow[][];
+}
+
+export default function OwnerTableGrid({ tables = [] }: OwnerTableGridProps) {
   // Normalize rows to arrays safely
-  const normalizeRows = (rows) => {
+  const normalizeRows = (rows: OwnerRow[]) => {
     if (!rows) return [];
     return Array.isArray(rows) ? rows : [rows];
   };
@@ -44,4 +54,4 @@ export default function OwnerTableGrid({ tables = [] }) {
       })}
     </div>
   );
-}
+} 
