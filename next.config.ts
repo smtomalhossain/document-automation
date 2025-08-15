@@ -9,14 +9,15 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'api.qrserver.com',
-        port: '',
-        pathname: '/v1/create-qr-code/**',
-      },
-    ],
+    domains: ['api.qrserver.com'],
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: 'api.qrserver.com',
+    //     port: '',
+    //     pathname: '/v1/create-qr-code/**',
+    //   },
+    // ],
   },
 };
 
