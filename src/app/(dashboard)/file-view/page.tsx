@@ -114,22 +114,22 @@ const LandTaxReceiptContent = () => {
   }, [searchParams]);
 
   useEffect(() => {
-  const preventZoom = (e: WheelEvent | TouchEvent) => {
-    if (e instanceof WheelEvent && e.ctrlKey) e.preventDefault(); // Ctrl + mouse wheel
-  };
+    const preventZoom = (e: WheelEvent | TouchEvent) => {
+      if (e instanceof WheelEvent && e.ctrlKey) e.preventDefault(); // Ctrl + mouse wheel
+    };
 
-  const preventPinch = (e: TouchEvent) => {
-    if (e.touches.length > 1) e.preventDefault(); // pinch gestures
-  };
+    const preventPinch = (e: TouchEvent) => {
+      if (e.touches.length > 1) e.preventDefault(); // pinch gestures
+    };
 
-  window.addEventListener("wheel", preventZoom, { passive: false });
-  window.addEventListener("touchmove", preventPinch, { passive: false });
+    window.addEventListener("wheel", preventZoom, { passive: false });
+    window.addEventListener("touchmove", preventPinch, { passive: false });
 
-  return () => {
-    window.removeEventListener("wheel", preventZoom);
-    window.removeEventListener("touchmove", preventPinch);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("wheel", preventZoom);
+      window.removeEventListener("touchmove", preventPinch);
+    };
+  }, []);
 
 
 
@@ -254,11 +254,11 @@ const LandTaxReceiptContent = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="portlet box blue">
-                <div className='bg-white pb-1 mx-4 border-1 rounded-lg border-[#7cacfa] mt-14'>
-                  <div className="flex justify-center items-center mb-5 border-1 border-[#7cacfa]  p-1 rounded-t-lg bg-[#4B8DF8]">
+                <div className='bg-white pb-1 lg:mx-4 mx-1 border-1 rounded-lg border-[#5C85C4] mt-14'>
+                  <div className="flex justify-center items-center mb-5 border-1 border-[#5C85C4]  p-1 rounded-t-lg  bg-[#5C85C4]">
                     <button
                       onClick={handlePrint}
-                      className="py-1 px-3 rounded shadow-3xl cursor-pointer text-white bg-[#3B82F6] border border-[#3B82F6]"
+                      className="py-1 px-3 rounded shadow-3xl cursor-pointer text-white bg-[#507ABD] border border-[#3B82F6]"
                     >
                       প্রিন্ট
                     </button>
@@ -455,7 +455,7 @@ const LandTaxReceiptContent = () => {
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_5 || '১৪৯২'}</td>
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_6 || '১৪৯২'}</td>
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_7 || ''}</td>
-                              <td className="text-center p-3 border border-gray-300">{ ''}</td>
+                              <td className="text-center p-3 border border-gray-300">{''}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -487,7 +487,7 @@ const LandTaxReceiptContent = () => {
 
                               {/* QR Code Section */}
                               <div className="w-[90px] m-3 flex justify-center items-center">
-                                <div className="w-[72px] h-[72px]">
+                                <div className="w-[75px] h-[px75]">
                                   {qrUrl && (
                                     <img
                                       width={200}
