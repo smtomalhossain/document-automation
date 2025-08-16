@@ -20,7 +20,7 @@ export default function DashboardLayout({
   const linkHref = isAdmin ? "/admin" : "/create-new-file";
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex ">
       {/* LEFT MENU */}
       {!hideLayout && (
         <div className="hidden lg:block lg:w-[20%] xl:w-[20%] bg-white-200 shadow-md p-4">
@@ -33,9 +33,8 @@ export default function DashboardLayout({
 
       {/* RIGHT PANEL */}
       <div
-        className={`w-full ${
-          !hideLayout ? "lg:w-[84%] xl:w-[84%]" : ""
-        } bg-[#F7F8FA] overflow-scroll flex flex-col`}
+        className={`w-full ${!hideLayout ? "lg:w-[84%] xl:w-[84%] bg-[#F7F8FA]" : "bg-[#f4ffe6]"
+          } overflow-scroll flex flex-col`}
       >
         {!hideLayout && <Navbar />}
         {children}
