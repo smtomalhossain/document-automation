@@ -169,7 +169,11 @@ const BanglaLandForm = () => {
         const newErrors: { [key: string]: string } = {};
         requiredFields.forEach((field) => {
             if (!formData[field]?.trim()) {
+                if (field = "invoice_no") {
+                    return
+                }
                 newErrors[field] = "এই ঘরটি আবশ্যক";
+
             }
         });
 

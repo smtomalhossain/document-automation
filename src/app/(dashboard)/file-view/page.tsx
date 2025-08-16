@@ -454,8 +454,8 @@ const LandTaxReceiptContent = () => {
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_4 || '৩৫০'}</td>
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_5 || '১৪৯২'}</td>
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_6 || '১৪৯২'}</td>
-                              <td className="text-center p-3 border border-gray-300">{landForm.table_row_7 || '০'}</td>
                               <td className="text-center p-3 border border-gray-300">{landForm.table_row_7 || ''}</td>
+                              <td className="text-center p-3 border border-gray-300">{ ''}</td>
                             </tr>
                           </tbody>
                         </table>

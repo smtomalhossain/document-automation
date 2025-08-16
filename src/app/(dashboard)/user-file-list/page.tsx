@@ -44,7 +44,7 @@ const UserFileListPage = () => {
           },
         });
         const json = await res.json();
-        const mapped = json.map((item: any, index: number) => ({
+        const mapped = json.reverse().map((item: any, index: number) => ({
           id: item.id,
           sl: index + 1,
           mouzar_no: item.mouzar_no,
