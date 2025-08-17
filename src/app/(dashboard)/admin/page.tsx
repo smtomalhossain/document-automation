@@ -87,6 +87,27 @@ const Page = () => {
             Save Number
           </button>
         </div>
+
+        <div className="mb-6">
+          <label
+            htmlFor="WhatsAppNumber"
+            className="block mb-2 font-semibold text-gray-700"
+          >
+            Change WhatsApp Number
+          </label>
+          <input
+            type="text"
+            id="WhatsAppNumber"
+            placeholder="Enter new WhatsApp number"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="button"
+            className="mt-3 bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer"
+          >
+            Change WhatsApp
+          </button>
+        </div>
         <div>
           <label
             htmlFor="noticeBoard"
