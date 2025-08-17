@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Tabel";
 import Modal from "@/components/Modal";
@@ -13,6 +13,7 @@ type Assignments = {
   name: string;
   email: string;
   phone: string;
+  balance: number;
 };
 
 const columns = [
@@ -20,6 +21,7 @@ const columns = [
   { header: "Name", accessor: "name", className: "hidden md:table-cell" },
   { header: "Email", accessor: "email", className: "hidden md:table-cell" },
   { header: "Phone", accessor: "phone", className: "hidden md:table-cell" },
+  { header: "Balance", accessor: "balance", className: "hidden md:table-cell" },
   { header: "Actions", accessor: "actions", className: "text-right" },
 ];
 
@@ -136,6 +138,7 @@ const UserListPage = () => {
       <td className="hidden md:table-cell">{item.name}</td>
       <td className="hidden md:table-cell">{item.email}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
+      <td className="hidden md:table-cell">{item.balance}</td>
       <td className="text-right">
         <div className="flex justify-end items-center gap-3 mx-2">
           <button
@@ -143,6 +146,12 @@ const UserListPage = () => {
             onClick={() => openModal("delete", item)}
           >
             <FaTrash /> Delete
+          </button>
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm flex items-center gap-1 cursor-pointer"
+            onClick={() => openModal("edit", item)}
+          >
+            <FaEdit /> Edit
           </button>
         </div>
       </td>
