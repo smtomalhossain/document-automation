@@ -117,6 +117,18 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Create a password"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            
+          </div>
+          <div>
+            <label className="block mb-1 text-gray-700 font-medium" htmlFor="price">
+              Price
+            </label>
+            <input
+              type="text"
+              id="price"
+              placeholder="Enter Your Price"
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
 
           {/* Submit Button */}
