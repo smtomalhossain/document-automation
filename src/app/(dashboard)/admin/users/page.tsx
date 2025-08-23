@@ -57,6 +57,7 @@ const UserListPage = () => {
         name: user.fullName || "",
         email: user.email,
         phone: user.whatsApp || "",
+        balance: user?.account?.balance || 0,
       }));
       setUsers(mapped);
     } catch (err: any) {
