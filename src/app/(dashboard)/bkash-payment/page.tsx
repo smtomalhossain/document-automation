@@ -11,16 +11,16 @@ const BkashRecharge = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [bkashNumber, setBkashNumber] = useState("");
-  const [notice, setNotice] = useState("");
+  // const [notice, setNotice] = useState("");
 
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
     fetch(`${apiUrl}/app-setting/bkash_number`)
       .then((res) => res.json())
       .then((data) => setBkashNumber(data.value || ""));
-    fetch(`${apiUrl}/app-setting/notice`)
-      .then((res) => res.json())
-      .then((data) => setNotice(data.value || ""));
+    // fetch(`${apiUrl}/app-setting/notice`)
+    //   .then((res) => res.json())
+    //   .then((data) => setNotice(data.value || ""));
   }, []);
 
   const handleRecharge = async () => {
@@ -74,11 +74,11 @@ const BkashRecharge = () => {
           <Image src="/bkash.svg" alt="bKash Logo" width={120} height={40} />
         </div>
         {/* Notice Board */}
-        {notice && (
+        {/* {notice && (
           <div className="mb-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded text-center">
             {notice}
           </div>
-        )}
+        )} */}
         {/* Send Money Info */}
         <div className="text-center text-sm text-gray-600 mb-4">
           Send money to this number:

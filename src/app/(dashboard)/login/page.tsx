@@ -72,7 +72,7 @@ const handleLogin = async () => {
       if (role === "ADMIN") {
         window.location.href = "/admin";
       } else {
-        window.location.href = "/user-file-list";
+        window.location.href = "/create-new-file";
       }
     }, 1200);
   } catch (err: any) {

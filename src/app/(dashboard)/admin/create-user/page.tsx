@@ -9,6 +9,7 @@ const RegistrationForm = () => {
     email: "",
     whatsapp: "",
     password: "",
+    price: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,37 +20,37 @@ const RegistrationForm = () => {
     }));
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch(`${apiUrl}/user/create-user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${Cookies.get("auth_token")}`,
-      },
-      body: JSON.stringify(formData),
-    });
+      const res = await fetch(`${apiUrl}/user/create-user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Cookies.get("auth_token")}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-    console.log(JSON.stringify(formData));
+      console.log(JSON.stringify(formData));
 
-    if (!res.ok) {
-      const err = await res.json();
-      alert("Error: " + err.error);
-      return;
+      if (!res.ok) {
+        const err = await res.json();
+        alert("Error: " + err.error);
+        return;
+      }
+
+      const user = await res.json();
+      alert("User created successfully!");
+      setFormData({ fullName: "", email: "", whatsapp: "", password: "", price: "" });
+    } catch (error) {
+      console.error("Failed to create user:", error);
+      alert("Failed to create user.");
     }
-
-    const user = await res.json();
-    alert("User created successfully!");
-    setFormData({ fullName: "", email: "", whatsapp: "", password: "" });
-  } catch (error) {
-    console.error("Failed to create user:", error);
-    alert("Failed to create user.");
-  }
-};
+  };
 
   return (
     <div className=" mt-10 flex items-center justify-center bg-gray-100">
@@ -117,7 +118,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Create a password"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            
+
           </div>
           <div>
             <label className="block mb-1 text-gray-700 font-medium" htmlFor="price">
@@ -126,6 +127,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             <input
               type="text"
               id="price"
+              value={formData.price}
+              onChange={handleChange}
               placeholder="Enter Your Price"
               className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

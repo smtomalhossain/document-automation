@@ -60,6 +60,7 @@ const BanglaLandForm = () => {
     const mode = params.mode;
 
     const isUpdate = mode === "update" && !!id;
+    const [notice, setNotice] = useState("");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState(initialForm);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -76,12 +77,13 @@ const BanglaLandForm = () => {
 
 
     useEffect(() => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
         if (isUpdate && id) {
             setLoading(true);
             const fetchData = async () => {
                 try {
                     const token = Cookies.get("auth_token");
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
                     const res = await fetch(`${apiUrl}/land-forms/${id}`, {
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -110,6 +112,11 @@ const BanglaLandForm = () => {
             setOwners([]);
             setLands([]);
         }
+        //
+        // const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+        fetch(`${apiUrl}/app-setting/notice`)
+            .then((res) => res.json())
+            .then((data) => setNotice(data.value || ""));
     }, [isUpdate, id]);
 
     // Handle main form inputs change
@@ -234,9 +241,9 @@ const BanglaLandForm = () => {
         <>
             <div className="mx-4 bg-white p-6 rounded-md mt-9">
                 <div className=" border-2 border-blue-500 mx-2 p-2 bg-blue-50">
-                    <Marquee>
-                        বিশেষ নোটিশ: সমস্যা সমাধান করা হয়েছে 👍👍 
-                    </Marquee>
+                    {notice && (<Marquee>
+                        {notice}
+                    </Marquee>)}
                 </div>
             </div>
             <form

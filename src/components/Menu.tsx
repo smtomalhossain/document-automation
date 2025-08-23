@@ -11,6 +11,7 @@ import { PaymentRequestData } from "@/app/lib/data"; // 🔹 import payment data
 const Menu = () => {
   const pathname = usePathname();
   const [role, setRole] = useState<string | null>(null);
+  const [WhatsAppNumber, setWhatsAppNumber] = useState("");
 
   useEffect(() => {
     const userData = Cookies.get("user.sms");
@@ -18,6 +19,10 @@ const Menu = () => {
       const parsed = JSON.parse(userData);
       setRole(parsed.role); // "school_admin" or other roles
     }
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    fetch(`${apiUrl}/app-setting/whatsapp_number`)
+      .then((res) => res.json())
+      .then((data) => setWhatsAppNumber(data.value || ""));
   }, []);
 
   const selectedMenu = role === "ADMIN" ? adminMenu : userMenu;
@@ -36,6 +41,11 @@ const Menu = () => {
           {section.items.map((item, itemIndex) => {
             const isActive = pathname === item.href;
             const isPaymentMenu = item.label === "পেমেন্ট রিকোয়েস্ট";
+            const isSupport = item.label === "সাপোর্ট";
+
+            if (isSupport) {
+              item.href = `https://wa.me/${WhatsAppNumber}`;
+            }
 
             return (
               <ul
@@ -45,11 +55,10 @@ const Menu = () => {
                 <li className="w-[16.25rem] my-[0.0625rem] relative">
                   <Link
                     href={item.href}
-                    className={`flex items-center px-4 py-[0.625rem] mx-4 rounded-md transition-colors duration-300 text-[0.9375rem] font-normal ${
-                      isActive
-                        ? "bg-blue-500 text-white"
-                        : "text-[#566a7f] hover:bg-blue-200 hover:text-blue-500"
-                    }`}
+                    className={`flex items-center px-4 py-[0.625rem] mx-4 rounded-md transition-colors duration-300 text-[0.9375rem] font-normal ${isActive
+                      ? "bg-blue-500 text-white"
+                      : "text-[#566a7f] hover:bg-blue-200 hover:text-blue-500"
+                      }`}
                   >
                     <span className="w-6 mr-2 text-[1.25rem] flex-shrink-0">
                       <item.icon />

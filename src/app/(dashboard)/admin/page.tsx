@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 const Page = () => {
   const [bkashNumber, setBkashNumber] = useState("");
+  const [WhatsAppNumber, setWhatsAppNumber] = useState("");
   const [notice, setNotice] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -13,6 +14,9 @@ const Page = () => {
     fetch(`${apiUrl}/app-setting/bkash_number`)
       .then((res) => res.json())
       .then((data) => setBkashNumber(data.value || ""));
+    fetch(`${apiUrl}/app-setting/whatsapp_number`)
+      .then((res) => res.json())
+      .then((data) => setWhatsAppNumber(data.value || ""));
     fetch(`${apiUrl}/app-setting/notice`)
       .then((res) => res.json())
       .then((data) => setNotice(data.value || ""));
@@ -34,6 +38,25 @@ const Page = () => {
       setTimeout(() => setSuccess(""), 2000);
     } else {
       setSuccess("Failed to save Bkash Number");
+    }
+  };
+
+  const handleSaveWhatsAppNumber = async () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const token = Cookies.get("auth_token");
+    const res = await fetch(`${apiUrl}/app-setting/whatsapp_number`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ value: WhatsAppNumber }),
+    });
+    if (res.ok) {
+      setSuccess("WhatsApp Number saved successfully!");
+      setTimeout(() => setSuccess(""), 2000);
+    } else {
+      setSuccess("Failed to save WhatsApp Number");
     }
   };
 
@@ -98,11 +121,14 @@ const Page = () => {
           <input
             type="text"
             id="WhatsAppNumber"
+            value={WhatsAppNumber}
+            onChange={(e) => setWhatsAppNumber(e.target.value)}
             placeholder="Enter new WhatsApp number"
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="button"
+            onClick={handleSaveWhatsAppNumber}
             className="mt-3 bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded cursor-pointer"
           >
             Change WhatsApp
