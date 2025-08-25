@@ -226,8 +226,11 @@ const BanglaLandForm = () => {
 
             alert(isUpdate ? "ফর্মটি সফলভাবে আপডেট হয়েছে!" : "ফর্মটি সফলভাবে সাবমিট হয়েছে!");
         } catch (err) {
-            console.error(err);
-            alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
+            console.error((err as any).message);
+            if ((err as any)?.message == 'Insufficient balance')
+                alert("আপনার ব্যাল্যান্স অপর্যাপ্ত। পরে আবার চেষ্টা করুন।");
+            else
+                alert("সার্ভারে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন।");
         } finally {
             setShowSubmitConfirm(false); // Close modal
         }
