@@ -64,7 +64,7 @@ const BanglaLandForm = () => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState(initialForm);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
+    const [formPrice, setFormPrice] = useState<String>('150');
     // Owners state
     const [owners, setOwners] = useState<Owner[]>([]);
 
@@ -78,12 +78,12 @@ const BanglaLandForm = () => {
 
     useEffect(() => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const token = Cookies.get("auth_token");
 
         if (isUpdate && id) {
             setLoading(true);
             const fetchData = async () => {
                 try {
-                    const token = Cookies.get("auth_token");
                     const res = await fetch(`${apiUrl}/land-forms/${id}`, {
                         headers: {
                             "Authorization": `Bearer ${token}`,
@@ -117,6 +117,15 @@ const BanglaLandForm = () => {
         fetch(`${apiUrl}/app-setting/notice`)
             .then((res) => res.json())
             .then((data) => setNotice(data.value || ""));
+        fetch(`${apiUrl}/user/get-user`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            }
+        )
+            .then((res) => res.json())
+            .then((data) => setFormPrice(data.price));
     }, [isUpdate, id]);
 
     // Handle main form inputs change
@@ -200,7 +209,7 @@ const BanglaLandForm = () => {
             let res;
 
             if (isUpdate && id) {
-                res = await fetch(`${apiUrl}/land-forms/${id}`, {
+                res = await fetch(`${apiUrl}/land-forms/with-pay/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -511,7 +520,7 @@ const BanglaLandForm = () => {
                         title="নিশ্চিতকরণ"
                         content={
                             <div className="space-y-4">
-                                <p>আপনার অ্যাকাউন্ট থেকে ১৫০ টাকা কেটে নেওয়া হবে।</p>
+                                <p>আপনার অ্যাকাউন্ট থেকে {formPrice} টাকা কেটে নেওয়া হবে।</p>
                                 <div className="flex justify-end gap-4">
                                     <button
                                         onClick={() => setShowSubmitConfirm(false)}
