@@ -3,33 +3,24 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // const { pathname } = req.nextUrl;
+	const { nextUrl, cookies } = req;
+	const { pathname, search } = nextUrl;
 
-  // const isLoginRoute = pathname === "/login";
-  // const isBaseRoute = pathname === "/";
+	// Allow login route and public assets
+	const isPublicRoute = pathname === "/login" || pathname === "/favicon.ico" || pathname.startsWith("/_next/");
 
-  // const cookie = req.cookies.get("user.sms");
-  // const user = cookie ? JSON.parse(cookie.value || "{}") : null;
+	const authToken = cookies.get("auth_token")?.value;
 
-  // // 🚫 Not logged in — redirect to /login (except for login page)
-  // if (!user && !isLoginRoute) {
-  //   return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
-  // }
+	// Not logged in and requesting a protected page → redirect to login with returnUrl
+	if (!authToken && !isPublicRoute) {
+		const returnUrl = encodeURIComponent(`${pathname}${search || ""}`);
+		const loginUrl = new URL(`/login?returnUrl=${returnUrl}`, nextUrl.origin);
+		return NextResponse.redirect(loginUrl);
+	}
 
-  // // ✅ Logged in but trying to access /login or root — redirect to proper page
-  // if (user && (isLoginRoute || isBaseRoute)) {
-  //   const redirectTo = user.username === "Tomal1" ? "/create-new-file" : "/admin";
-  //   return NextResponse.redirect(new URL(redirectTo, req.nextUrl.origin));
-  // }
-
-  // // 🔒 Restrict /create-new-file to only Tomal1
-  // if (pathname.startsWith("/create-new-file") && user?.username !== "Tomal1") {
-  //   return NextResponse.redirect(new URL("/admin", req.nextUrl.origin));
-  // }
-
-  return NextResponse.next();
+	return NextResponse.next();
 }
 
-// export const config = {
-//   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
-// };
+export const config = {
+	matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+};
